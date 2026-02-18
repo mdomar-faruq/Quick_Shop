@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SurjoController;
+use App\Http\Controllers\AdminSurjoController;
+
+Auth::routes();
+
+//--------------------------Frontend------------------------------------------------
+Route::get('/', [SurjoController::class, 'surjo'])->name('surjo');
+Route::get('/api/products', [SurjoController::class, 'apiProduct']);
+Route::post('/orders/store', [SurjoController::class, 'surjoOrderStore']);
+
+
+
+
+//--------------------------backend------------------------------------------------
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+ Route::get('/', [AdminSurjoController::class, 'adminHome'])->name('adminHome');
+ Route::get('/setting', [AdminSurjoController::class, 'adminSetting'])->name('adminSetting');
+
+ //products
+ Route::get('/product', [AdminSurjoController::class, 'adminProduct'])->name('adminProduct');
+ Route::get('/add_product', [AdminSurjoController::class, 'adminAddProduct'])->name('adminAddProduct');
+ Route::post('/product', [AdminSurjoController::class, 'adminProductStore'])->name('adminProductStore');
+ Route::get('/product/{id}/edit', [AdminSurjoController::class, 'adminProductEdit'])->name('adminProductEdit');
+ Route::post('/product/{id}/edit', [AdminSurjoController::class, 'adminProductUpdate'])->name('adminProductUpdate');
+
+ //enable or disable
+ Route::post('/product/enable_or_disable/{id}', [AdminSurjoController::class, 'adminProductEnableDisable'])->name('adminProductEnableDisable');
+
+
+ //orders
+ Route::get('/recent_order', [AdminSurjoController::class, 'recentOrder'])->name('recentOrder');
+ Route::get('/pending_order', [AdminSurjoController::class, 'pendingOrder'])->name('pendingOrder');
+ Route::get('/cancelled_order', [AdminSurjoController::class, 'cancelledOrder'])->name('cancelledOrder');
+ Route::get('/delivered_order', [AdminSurjoController::class, 'deliveredOrder'])->name('deliveredOrder');
+ Route::post('/order_update_status/{id}', [AdminSurjoController::class, 'adminOrderUpdateStatus'])->name('adminOrderUpdateStatus');
+});
