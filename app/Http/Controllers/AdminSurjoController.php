@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -27,20 +28,125 @@ class AdminSurjoController extends Controller
 
 
     //Product
+    public function adminCategorie()
+    {
+        $categories = DB::table('categories')->get();
+        return view('backend.categories.index', compact('categories'));
+    }
+
+    public function adminAddCategory()
+    {
+        return view('backend.categories.add');
+    }
+
+    public function adminCategoryStore(Request $request)
+    {
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            // 'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            // 1. Store the file physically
+            $path = $request->file('image')->store('categories', 'public');
+
+            // 2. Convert path to Full URL (e.g., http://yourdomain.com/storage/categories/xyz.jpg)
+            $fullUrl = asset('storage/' . $path);
+
+            // 3. Save the full URL to the database
+
+        } else {
+            $fullUrl = '';
+        }
+
+        $path = $request->file('image')->store('products', 'public');
+
+        DB::table('categories')->insert([
+            'name'       => $request->name,
+            'image'      => $fullUrl,
+            'user_id'       => Auth::user()->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('adminCategorie')->with('success', 'Category added successfully!');
+    }
+
+    public function adminCategoryEdit($id)
+    {
+        $categories = DB::table('categories')->where('id', $id)->first();
+        return view('backend.categories.edit', compact('categories'));
+    }
+
+    public function adminCategoryUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $data = [
+            'name'       => $request->name,
+            'user_id'       => Auth::user()->id,
+            'updated_at' => now(),
+        ];
+
+        $categories = DB::table('categories')->where('id', $id)->first();
+        if ($request->hasFile('image')) {
+            // DELETE PREVIOUS IMAGE Logic
+            if ($categories->image) {
+                // Since we stored the full URL, we need to extract the path to delete it
+                // This removes "http://domain.com/storage/" from the string
+                $oldPath = str_replace(asset('storage/'), '', $categories->image);
+                Storage::disk('public')->delete($oldPath);
+            }
+
+            // Store new and generate Full URL
+            $path = $request->file('image')->store('categories', 'public');
+            $data['image'] = asset('storage/' . $path);
+        }
+
+        DB::table('categories')->where('id', $id)->update($data);
+
+        return redirect()->route('adminCategorie')->with('success', 'Category updated successfully!');
+    }
+
+    public function adminCategoryEnableDisable(Request $request, $id)
+    {
+        try {
+            DB::table('categories')
+                ->where('id', $id)
+                ->update(['status' => $request->txt_status]); // ✅ use key => value
+
+            return back()->with('success', 'Category updated successfully!');
+        } catch (\Exception $e) {
+            // This will tell you exactly what is wrong in your browser's Network Tab
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+
+    //Product
     public function adminProduct()
     {
-        $products = DB::table('products')->get();
+
+        $products = DB::table('products')
+            ->leftJoin('categories', 'products.category_id', 'categories.id')
+            ->select('products.*', 'categories.name as cat_name')
+            ->get();
         return view('backend.products.index', compact('products'));
     }
     public function adminAddProduct()
     {
-        return view('backend.products.add');
+        $categories = DB::table('categories')->get();
+        return view('backend.products.add', compact('categories'));
     }
 
     public function adminProductStore(Request $request)
     {
         $request->validate([
             'name'  => 'required|string|max:255',
+            'category_id'  => 'required',
             'price' => 'required|numeric|min:0',
             'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -64,6 +170,8 @@ class AdminSurjoController extends Controller
             'name'       => $request->name,
             'price'      => $request->price,
             'image'      => $fullUrl,
+            'category_id'       => $request->category_id,
+            'user_id'       => Auth::user()->id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -73,14 +181,16 @@ class AdminSurjoController extends Controller
 
     public function adminProductEdit($id)
     {
+        $categories = DB::table('categories')->get();
         $product = DB::table('products')->where('id', $id)->first();
-        return view('backend.products.edit', compact('product'));
+        return view('backend.products.edit', compact('product', 'categories'));
     }
 
     public function adminProductUpdate(Request $request, $id)
     {
         $request->validate([
             'name'  => 'required|string|max:255',
+            'category_id'  => 'required',
             // 'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -88,6 +198,8 @@ class AdminSurjoController extends Controller
         $data = [
             'name'       => $request->name,
             'price'      => $request->price,
+            'category_id'       => $request->category_id,
+            'user_id'       => Auth::user()->id,
             'updated_at' => now(),
         ];
 

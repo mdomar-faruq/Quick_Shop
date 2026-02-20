@@ -16,10 +16,25 @@
 
                             <div class="mb-3 text-center">
                                 @if ($product->image)
-                                    <img src="{{ $product->image }}" class="img-thumbnail mb-2"
-                                        width="150">
+                                    <img src="{{ $product->image }}" class="img-thumbnail mb-2" width="150">
                                     <p class="small text-muted">Current Image</p>
                                 @endif
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Category</label>
+                                <select name="category_id" id="category_id" class="form-control ">
+                                    <option value="">Choose Option</option>
+                                    @foreach ($categories as $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ $item->id == $product->category_id ? 'selected' : '' }}>
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">

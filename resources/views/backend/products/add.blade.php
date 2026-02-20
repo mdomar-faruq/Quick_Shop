@@ -20,6 +20,22 @@
                             @csrf
 
                             <div class="mb-3">
+                                <label class="form-label fw-bold">Category</label>
+                                <select name="category_id" id="category_id" class="form-control ">
+                                    <option value="">Choose Option</option>
+                                    @foreach ($categories as $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ $item->id == old('category_id') ? 'selected' : '' }}>
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
                                 <label class="form-label fw-bold">Product Name</label>
                                 <input type="text" name="name"
                                     class="form-control @error('name') is-invalid @enderror" placeholder="e.g. T-shirt"

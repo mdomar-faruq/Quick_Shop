@@ -3,9 +3,9 @@
 @section('content')
     <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Product</h2>
-            <a href="{{ route('adminAddProduct') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Add New Product
+            <h2 class="fw-bold">Category</h2>
+            <a href="{{ route('adminAddCategory') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add New Category
             </a>
         </div>
 
@@ -13,22 +13,20 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0 align-middle">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th class="ps-4">Image</th>
-                                <th>Category Name</th>
-                                <th>Product Name</th>
-                                <th>Price</th>
+                                <th width='50%'>Name</th>
                                 <th>Status</th>
                                 <th class="text-end pe-4">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($products as $product)
+                            @forelse($categories as $categorie)
                                 <tr>
                                     <td class="ps-4">
-                                        @if ($product->image)
-                                            <img src="{{ $product->image }}" class="rounded shadow-sm" width="50"
+                                        @if ($categorie->image)
+                                            <img src="{{ $categorie->image }}" class="rounded shadow-sm" width="50"
                                                 height="50" style="object-fit: cover;">
                                         @else
                                             <div class="bg-light rounded d-flex align-items-center justify-content-center"
@@ -37,32 +35,30 @@
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="fw-semibold">{{ $product->name }}</td>
-                                    <td class="fw-semibold">{{ $product->cat_name }}</td>
-                                    <td>Tk{{ number_format($product->price, 2) }}</td>
+                                    <td width='50%' class="fw-semibold">{{ $categorie->name }}</td>
                                     <td>
-                                        <form action="{{ route('adminProductEnableDisable', $product->id) }}" method="POST"
-                                            class="d-inline">
+                                        <form action="{{ route('adminCategoryEnableDisable', $categorie->id) }}"
+                                            method="POST" class="d-inline">
                                             @csrf
                                             <div class="btn-group" role="group" aria-label="Enable/Disable">
                                                 <input type="radio" class="btn-check" name="txt_status"
-                                                    id="enableBtn_{{ $product->id }}" value="1" autocomplete="off"
+                                                    id="enableBtn_{{ $categorie->id }}" value="1" autocomplete="off"
                                                     onchange="this.form.submit()"
-                                                    {{ $product->status == 1 ? 'checked' : '' }}>
+                                                    {{ $categorie->status == 1 ? 'checked' : '' }}>
                                                 <label class="btn btn-outline-success"
-                                                    for="enableBtn_{{ $product->id }}">Enable</label>
+                                                    for="enableBtn_{{ $categorie->id }}">Enable</label>
 
                                                 <input type="radio" class="btn-check" name="txt_status"
-                                                    id="disableBtn_{{ $product->id }}" value="2" autocomplete="off"
+                                                    id="disableBtn_{{ $categorie->id }}" value="2" autocomplete="off"
                                                     onchange="this.form.submit()"
-                                                    {{ $product->status == 2 ? 'checked' : '' }}>
+                                                    {{ $categorie->status == 2 ? 'checked' : '' }}>
                                                 <label class="btn btn-outline-danger"
-                                                    for="disableBtn_{{ $product->id }}">Disable</label>
+                                                    for="disableBtn_{{ $categorie->id }}">Disable</label>
                                             </div>
                                         </form>
                                     </td>
                                     <td class="text-end pe-4">
-                                        <a href="{{ route('adminProductEdit', $product->id) }}"
+                                        <a href="{{ route('adminCategoryEdit', $categorie->id) }}"
                                             class="btn btn-sm btn-outline-primary me-1">
                                             Edit
                                         </a>

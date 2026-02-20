@@ -19,6 +19,18 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
  Route::get('/', [AdminSurjoController::class, 'adminHome'])->name('adminHome');
  Route::get('/setting', [AdminSurjoController::class, 'adminSetting'])->name('adminSetting');
 
+
+ //categories
+ Route::get('/categorie', [AdminSurjoController::class, 'adminCategorie'])->name('adminCategorie');
+ Route::get('/add_categorie', [AdminSurjoController::class, 'adminAddCategory'])->name('adminAddCategory');
+ Route::post('/categorie', [AdminSurjoController::class, 'adminCategoryStore'])->name('adminCategoryStore');
+ Route::get('/categorie/{id}/edit', [AdminSurjoController::class, 'adminCategoryEdit'])->name('adminCategoryEdit');
+ Route::post('/categorie/{id}/edit', [AdminSurjoController::class, 'adminCategoryUpdate'])->name('adminCategoryUpdate');
+
+ //enable or disable
+ Route::post('/categorie/enable_or_disable/{id}', [AdminSurjoController::class, 'adminCategoryEnableDisable'])->name('adminCategoryEnableDisable');
+ //End categories
+
  //products
  Route::get('/product', [AdminSurjoController::class, 'adminProduct'])->name('adminProduct');
  Route::get('/add_product', [AdminSurjoController::class, 'adminAddProduct'])->name('adminAddProduct');
@@ -29,6 +41,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
  //enable or disable
  Route::post('/product/enable_or_disable/{id}', [AdminSurjoController::class, 'adminProductEnableDisable'])->name('adminProductEnableDisable');
 
+ //end products
 
  //orders
  Route::get('/recent_order', [AdminSurjoController::class, 'recentOrder'])->name('recentOrder');
