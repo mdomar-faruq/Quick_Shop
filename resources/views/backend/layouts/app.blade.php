@@ -113,12 +113,16 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('adminCategorie') }}"><i class="bi bi-map me-1"></i>
+                            Category</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('adminProduct') }}"><i class="bi bi-map me-1"></i>
                             Product</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('adminCategorie') }}"><i class="bi bi-map me-1"></i>
-                            Category</a>
+                        <a class="nav-link" href="{{ route('adminBlog') }}"><i class="bi bi-map me-1"></i>
+                            Blogs</a>
                     </li>
                 </ul>
             </div>
@@ -181,6 +185,9 @@
             });
         });
     </script>
+
+    @stack('scripts')
+
 
 </body>
 

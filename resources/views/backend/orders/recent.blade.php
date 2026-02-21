@@ -10,7 +10,7 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0 align-middle">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th class="ps-4">Order ID</th>
                                 <th>Customer Info</th>
@@ -36,8 +36,17 @@
                                             @endphp
                                             @if ($items)
                                                 @foreach ($items as $item)
-                                                    <li>• {{ $item->name }} <span class="text-primary">(QTY
-                                                            {{ $item->qty }} PCS)</span></li>
+                                                    <li>• {{ $item->name }}
+                                                        <span class="text-primary">(QTY
+                                                            {{ $item->qty }} PCS)
+                                                        </span>
+                                                        <span class="text-primary">(
+                                                            Size: {{ $item->size }})
+                                                        </span>
+                                                        <span class="text-info">(
+                                                            Code: {{ $item->product_id }})
+                                                        </span>
+                                                    </li>
                                                 @endforeach
                                             @else
                                                 <span class="text-danger">No items data</span>
@@ -45,15 +54,49 @@
                                         </ul>
                                     </td>
                                     <td class="fw-bold text-success">
-                                        ${{ number_format($order->total_amount, 2) }}
+                                        Tk{{ number_format($order->total_amount, 2) }}
                                     </td>
                                     <td class="text-muted small">
                                         {{ date('d M, Y', strtotime($order->created_at)) }}<br>
                                         {{ date('h:i A', strtotime($order->created_at)) }}
                                     </td>
-                                    <td class="text-end pe-4">
-                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
-                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button
+                                                class="btn btn-sm dropdown-toggle 
+                                           {{ $order->status == 'delivered' ? 'btn-success' : ($order->status == 'cancelled' ? 'btn-danger' : 'btn-warning') }}"
+                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                {{ ucfirst($order->status) }}
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <form action="{{ route('adminOrderUpdateStatus', $order->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="status" value="pending">
+                                                        <button type="submit" class="dropdown-item">Pending</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form action="{{ route('adminOrderUpdateStatus', $order->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="status" value="delivered">
+                                                        <button type="submit"
+                                                            class="dropdown-item text-success">Delivered</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form action="{{ route('adminOrderUpdateStatus', $order->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="status" value="cancelled">
+                                                        <button type="submit"
+                                                            class="dropdown-item text-danger">Cancelled</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

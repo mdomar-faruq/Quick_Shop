@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Sports T-Shirt Store</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -204,8 +205,11 @@
 <body>
     <section class="hero-section py-5">
         <div class="container">
-            {{-- 1 --}}
-            <div class="row align-items-center">
+
+            <div id="blog_div"></div>
+
+
+            {{-- <div class="row align-items-center">
                 <div class="col-lg-6">
                     <div class="animated-border-box">
                         <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -249,104 +253,7 @@
                     </div>
                 </div>
 
-            </div>
-
-            {{-- 2 --}}
-
-            <div class="row align-items-center mt-5">
-                <div class="col-lg-6">
-                    <div class="animated-border-box">
-                        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="https://images.unsplash.com/photo-1581338834647-b0fb40704e21?auto=format&fit=crop&w=800"
-                                        class="d-block w-100 carousel-img" alt="Brazil T-Shirt Front">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="https://images.unsplash.com/photo-1581338834647-b0fb40704e21?auto=format&fit=crop&w=800"
-                                        class="d-block w-100 carousel-img" alt="Brazil T-Shirt Back">
-                                </div>
-                            </div>
-
-                            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel"
-                                data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-
-                            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel"
-                                data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 text-center px-lg-5 mt-4 mt-lg-0">
-                    <span class="badge bg-danger mb-2">HOT DEAL</span>
-                    <h1 class="display-3 fw-bold">Japan Home</h1>
-                    <div class="my-3">
-                        <span class="old-price">1200 Tk</span> <br>
-                        <span class="new-price">Today: 950 Tk</span>
-                    </div>
-                    <p class="lead text-muted mb-4">High-quality breathable fabric, perfect for sports and casual wear.
-                        Get the iconic look today!</p>
-
-                    <div class="d-grid gap-2 d-md-block">
-                        <button class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow-sm"
-                            onclick="scrollToTeam('jp')">অর্ডার করতে চাই</button>
-                    </div>
-                </div>
-
-            </div>
-
-            {{-- 3 --}}
-
-            <div class="row align-items-center mt-5">
-                <div class="col-lg-6">
-                    <div class="animated-border-box">
-                        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="https://images.unsplash.com/photo-1581338834647-b0fb40704e21?auto=format&fit=crop&w=800"
-                                        class="d-block w-100 carousel-img" alt="Brazil T-Shirt Front">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="https://images.unsplash.com/photo-1581338834647-b0fb40704e21?auto=format&fit=crop&w=800"
-                                        class="d-block w-100 carousel-img" alt="Brazil T-Shirt Back">
-                                </div>
-                            </div>
-
-                            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel"
-                                data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-
-                            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel"
-                                data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 text-center px-lg-5 mt-4 mt-lg-0">
-                    <span class="badge bg-danger mb-2">HOT DEAL</span>
-                    <h1 class="display-3 fw-bold">Argentina Home</h1>
-                    <div class="my-3">
-                        <span class="old-price">1200 Tk</span> <br>
-                        <span class="new-price">Today: 950 Tk</span>
-                    </div>
-                    <p class="lead text-muted mb-4">High-quality breathable fabric, perfect for sports and casual wear.
-                        Get the iconic look today!</p>
-
-                    <div class="d-grid gap-2 d-md-block">
-                        <button class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow-sm"
-                            onclick="scrollToTeam('ar')">অর্ডার করতে চাই</button>
-                    </div>
-                </div>
-
-            </div>
-
+            </div> --}}
 
             {{-- end carousel --}}
 
@@ -394,14 +301,26 @@
 
                             <form id="order-form">
                                 <input type="text" id="c-name" class="form-control form-control-sm mb-1"
-                                    placeholder="Customer Name" required>
+                                    placeholder="Customer Name">
                                 <input type="tel" id="c-mobile" class="form-control form-control-sm mb-1"
                                     placeholder="Mobile" required>
-                                <textarea id="c-addr" class="form-control form-control-sm mb-2" rows="2" placeholder="Full Address"
-                                    required></textarea>
-                                <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">PLACE
-                                    ORDER</button>
+                                <textarea id="c-addr" class="form-control form-control-sm mb-2" rows="2" placeholder="Full Address"></textarea>
+
+                                <!-- Cash On Delivery Checkbox -->
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="cod-check">
+                                    <label class="form-check-label fw-bold" for="cod-check">
+                                        Cash On Delivery
+                                    </label>
+                                </div>
+
+                                <button type="submit" id="place-order-btn" class="btn btn-primary btn-sm w-100 fw-bold"
+                                    disabled>
+                                    PLACE ORDER
+                                </button>
                             </form>
+
+
                         </div>
                     </div>
                 </div>
@@ -410,158 +329,106 @@
         {{-- //end continer --}}
     </section>
 
-    <script>
-        const teams = [{
-                id: 'fr',
-                name: 'France',
-                flag: 'https://flagcdn.com/w640/fr.png',
-                kits: [{
-                        id: 101,
-                        name: 'Home Blue Kit',
-                        price: 90,
-                        img: 'https://flagcdn.com/w640/fr.png'
-                    },
-                    {
-                        id: 102,
-                        name: 'Away White Kit',
-                        price: 85,
-                        img: 'https://flagcdn.com/w640/fr.png'
-                    }
-                ]
-            },
-            {
-                id: 'br',
-                name: 'Brazil',
-                flag: 'https://flagcdn.com/w640/br.png',
-                kits: [{
-                        id: 201,
-                        name: 'Classic Yellow',
-                        price: 95,
-                        img: 'https://placehold.co/100x100?text=BR+Yellow'
-                    },
-                    {
-                        id: 202,
-                        name: 'Away Blue',
-                        price: 85,
-                        img: 'https://placehold.co/100x100?text=BR+Blue'
-                    }
-                ]
-            },
-            {
-                id: 'ar',
-                name: 'Argentina',
-                flag: 'https://flagcdn.com/w640/ar.png',
-                kits: [{
-                        id: 301,
-                        name: 'Home 3-Star',
-                        price: 110,
-                        img: 'https://placehold.co/100x100?text=AR+Home'
-                    },
-                    {
-                        id: 302,
-                        name: 'Training Jersey',
-                        price: 65,
-                        img: 'https://placehold.co/100x100?text=AR+Train'
-                    }
-                ]
-            },
-            {
-                id: 'jp',
-                name: 'Japan',
-                flag: 'https://flagcdn.com/w640/jp.png',
-                kits: [{
-                        id: 401,
-                        name: 'Samurai Blue',
-                        price: 90,
-                        img: 'https://placehold.co/100x100?text=JP+Blue'
-                    },
-                    {
-                        id: 402,
-                        name: 'Special Edition',
-                        price: 120,
-                        img: 'https://placehold.co/100x100?text=JP+Spec'
-                    }
-                ]
-            },
-            {
-                id: 'de',
-                name: 'Germany',
-                flag: 'https://flagcdn.com/w640/de.png',
-                kits: [{
-                        id: 501,
-                        name: 'Home White',
-                        price: 95,
-                        img: 'https://placehold.co/100x100?text=DE+Home'
-                    },
-                    {
-                        id: 502,
-                        name: 'Pink Away 2024',
-                        price: 100,
-                        img: 'https://placehold.co/100x100?text=DE+Away'
-                    }
-                ]
-            },
-            {
-                id: 'es',
-                name: 'Spain',
-                flag: 'https://flagcdn.com/w640/es.png',
-                kits: [{
-                    id: 601,
-                    name: 'La Roja Home',
-                    price: 90,
-                    img: 'https://placehold.co/100x100?text=ES+Home'
-                }]
-            },
-            {
-                id: 'gb-eng',
-                name: 'England',
-                flag: 'https://flagcdn.com/w640/gb-eng.png',
-                kits: [{
-                        id: 701,
-                        name: 'Three Lions Home',
-                        price: 95,
-                        img: 'https://placehold.co/100x100?text=ENG+Home'
-                    },
-                    {
-                        id: 702,
-                        name: 'Away Dark Blue',
-                        price: 90,
-                        img: 'https://placehold.co/100x100?text=ENG+Away'
-                    }
-                ]
-            },
-            {
-                id: 'pt',
-                name: 'Portugal',
-                flag: 'https://flagcdn.com/w640/pt.png',
-                kits: [{
-                    id: 801,
-                    name: 'CR7 Home Kit',
-                    price: 115,
-                    img: 'https://placehold.co/100x100?text=PT+Home'
-                }]
-            }
-        ];
 
+    {{-- //Blog --}}
+    <script>
+        renderHeroDeals();
+        async function renderHeroDeals() {
+            try {
+                const response = await fetch('/api/blogs');
+                const blogs = await response.json();
+                console.log(blogs);
+                const container = document.getElementById('blog_div');
+                container.innerHTML = blogs.map((p, idx) => `
+            <div class="row align-items-center mt-${idx > 0 ? 5 : 0}">
+                <div class="col-lg-6">
+                    <div class="animated-border-box">
+                        <div id="carousel-${p.id}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                               ${(p.images && p.images.length > 0 ? p.images : ['https://placehold.co/300x300?text=BR+Yellow']).map((img, i) => `
+                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                    <img src="${img}" class="d-block w-100 carousel-img" 
+                                                        alt="${p.title} Image ${i+1}" 
+                                                        onerror="this.onerror=null;this.src='https://placehold.co/300x300?text=BR+Yellow';">
+                                                </div>
+                                            `).join('')}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 text-center px-lg-5 mt-4 mt-lg-0">
+                    <span class="badge bg-danger mb-2">HOT DEAL</span>
+                    <h1 class="display-3 fw-bold">${p.title}</h1>
+                    <div class="my-3">
+                        <span class="old-price">${p.regular_price} Tk</span> <br>
+                        <span class="new-price">${p.offer_price_text} ${p.offer_price} Tk</span>
+                    </div>
+                    <p class="lead text-muted mb-4">${p.short_description}</p>
+                    <div class="d-grid gap-2 d-md-block">
+                        <button class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow-sm"
+                            onclick="scrollToTeam('${p.slug}')">অর্ডার করতে চাই</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+            } catch (err) {
+                console.error("Error loading hero deals:", err);
+            }
+        }
+    </script>
+
+    {{-- //Product & order --}}
+    <script>
+        let teams = []; // will be filled from API
         let cart = JSON.parse(localStorage.getItem('kitShopCart')) || [];
 
-        window.onload = () => {
-            renderFlags();
-            renderCart();
+        window.onload = async () => {
+            await loadTeams(); // fetch teams dynamically
+            renderFlags(); // render flags after data is loaded
+            renderCart(); // render cart from localStorage
         };
 
-        function renderFlags() {
-            document.getElementById('team-grid').innerHTML = teams.map(t => `
-        <div class="col">
-            <div class="flag-card" id="flag-${t.id}" onclick="loadKits('${t.id}')">
-                <img src="${t.flag}" class="flag-img">
-                <div class="flag-name">${t.name}</div>
-            </div>
-        </div>`).join('');
+        // Fetch teams from Laravel API
+        async function loadTeams() {
+            try {
+                const response = await fetch('/api/categories/with_product');
+                teams = await response.json(); // update global teams
+                // console.log("Loaded teams:", teams);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         }
 
+        // Render flag cards
+        function renderFlags() {
+            const grid = document.getElementById('team-grid');
+            if (!teams || teams.length === 0) {
+                grid.innerHTML = '<div class="text-muted">No teams available</div>';
+                return;
+            }
+            grid.innerHTML = teams.map(t => `
+            <div class="col">
+                <div class="flag-card" id="flag-${t.id}" onclick="loadKits('${t.id}')">
+                    <img src="${t.flag}" class="flag-img">
+                    <div class="flag-name">${t.name}</div>
+                </div>
+            </div>`).join('');
+        }
+
+        // Load kits for a team
         function loadKits(id) {
             const team = teams.find(t => t.id === id);
+            if (!team) {
+                console.error("No team found for id:", id);
+                return;
+            }
 
             // Switch Visibility
             document.getElementById('product-placeholder').style.display = 'none';
@@ -574,29 +441,38 @@
             // Populate Table
             document.getElementById('team-title').innerText = team.name;
             document.getElementById('product-tbody').innerHTML = team.kits.map(k => `
-        <tr>
-            <td><img src="${k.img}" class="product-thumb"></td>
-            <td class="fw-bold small">${k.name}</td>
-            <td><select id="s-${k.id}" class="form-select form-select-sm py-0" style="width:55px; font-size:10px;"><option>S</option><option selected>M</option><option>L</option></select></td>
-            <td class="fw-bold text-primary small">$${k.price}</td>
-            <td class="text-end"><button class="btn btn-dark btn-sm rounded-circle py-0 px-2" onclick="addToCart('${k.name}', ${k.price}, '${k.img}', 's-${k.id}')">+</button></td>
-        </tr>`).join('');
+            <tr>
+                <td><img src="${k.img}" class="product-thumb"></td>
+                <td class="fw-bold small">${k.name}</td>
+                <td>
+                    <select id="s-${k.id}" class="form-select form-select-sm py-0" style="width:55px; font-size:10px;">
+                        <option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option>
+                    </select>
+                </td>
+                <td class="fw-bold text-primary small">$${k.price}</td>
+                <td class="text-end">
+                   <button class="btn btn-dark btn-sm rounded-circle py-0 px-2"
+                      onclick="addToCart(${k.id}, '${k.name}', ${k.price}, '${k.img}', 's-${k.id}')">+</button>
+                </td>
+            </tr>`).join('');
 
-            // --- FIX: GO TO TABLE ON CLICK ---
+            // Scroll to table
             document.getElementById('shop-anchor').scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             });
         }
 
-        function addToCart(name, price, img, sizeId) {
+        // Add item to cart
+        function addToCart(productId, name, price, img, sizeId) {
             const size = document.getElementById(sizeId).value;
-            const item = cart.find(i => i.name === name && i.size === size);
+            const item = cart.find(i => i.product_id === productId && i.size === size);
+
             if (item) {
                 item.qty += 1;
             } else {
                 cart.push({
-                    id: Date.now(),
+                    product_id: productId, // store actual product table ID
                     name,
                     price,
                     img,
@@ -607,20 +483,23 @@
             save();
         }
 
-        function changeQty(id, d) {
-            const item = cart.find(i => i.id === id);
+        // Change quantity in cart
+        function changeQty(productId, d) {
+            const item = cart.find(i => i.product_id === productId);
             if (item) {
                 item.qty += d;
-                if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+                if (item.qty <= 0) cart = cart.filter(i => i.product_id !== productId);
             }
             save();
         }
 
+        // Save cart to localStorage
         function save() {
             localStorage.setItem('kitShopCart', JSON.stringify(cart));
             renderCart();
         }
 
+        // Render cart items
         function renderCart() {
             const list = document.getElementById('cart-list');
             if (cart.length === 0) {
@@ -629,23 +508,23 @@
                 return;
             }
             list.innerHTML = cart.map(i => `
-        <div class="cart-item">
-            <div class="d-flex align-items-center">
-                <img src="${i.img}" style="width:30px; height:30px; border-radius:4px; margin-right:8px; object-fit:cover;">
-                <div style="line-height:1.1">
-                    <span class="fw-bold d-block" style="font-size:10px;">${i.name}</span>
-                    <small class="text-muted" style="font-size:9px;">Size: ${i.size}</small>
+            <div class="cart-item">
+                <div class="d-flex align-items-center">
+                    <img src="${i.img}" style="width:30px; height:30px; border-radius:4px; margin-right:8px; object-fit:cover;">
+                    <div style="line-height:1.1">
+                        <span class="fw-bold d-block" style="font-size:10px;">${i.name}</span>
+                        <small class="text-muted" style="font-size:9px;">Size: ${i.size}</small>
+                    </div>
                 </div>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-                <div class="qty-box">
-                    <button class="qty-btn" onclick="changeQty(${i.id}, -1)">-</button>
-                    <span class="fw-bold" style="font-size:10px;">${i.qty}</span>
-                    <button class="qty-btn" onclick="changeQty(${i.id}, 1)">+</button>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="qty-box">
+                       <button class="qty-btn" onclick="changeQty(${i.product_id}, -1)">-</button>
+                        <span class="fw-bold" style="font-size:10px;">${i.qty}</span>
+                        <button class="qty-btn" onclick="changeQty(${i.product_id}, 1)">+</button>
+                    </div>
+                    <span class="fw-bold small" style="min-width:30px">$${i.price * i.qty}</span>
                 </div>
-                <span class="fw-bold small" style="min-width:30px">$${i.price * i.qty}</span>
-            </div>
-        </div>`).join('');
+            </div>`).join('');
             document.getElementById('total-val').innerText = cart.reduce((a, c) => a + (c.price * c.qty), 0);
         }
     </script>
@@ -658,6 +537,81 @@
 
             loadKits(id);
         }
+    </script>
+
+    <script>
+        const orderForm = document.getElementById('order-form');
+        const placeOrderBtn = document.getElementById('place-order-btn');
+        const codCheck = document.getElementById('cod-check');
+
+        codCheck.addEventListener('change', function() {
+            placeOrderBtn.disabled = !this.checked;
+        });
+
+        orderForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const customerName = document.getElementById('c-name').value;
+            const mobile = document.getElementById('c-mobile').value;
+            const address = document.getElementById('c-addr').value;
+
+            // cart items should include size, qty, price, etc.
+            const cart = JSON.parse(localStorage.getItem('kitShopCart')) || [];
+            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            const payload = {
+                customer_name: customerName,
+                mobile: mobile,
+                address: address,
+                cart: cart.map(item => ({
+                    product_id: item.product_id, // actual product table ID
+                    name: item.name,
+                    size: item.size,
+                    qty: item.qty,
+                    price: item.price
+                })),
+                total: totalAmount
+            };
+
+            console.log("Payload being sent:", payload);
+
+            try {
+                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+
+                // read response safely
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (err) {
+                    console.error("Response was not JSON:", text);
+                    alert("Server returned invalid response.");
+                    return;
+                }
+
+                if (response.ok && data.success) {
+                    alert("Order placed successfully!");
+                    localStorage.removeItem('kitShopCart');
+                    window.location.reload();
+                } else {
+                    alert("Failed: " + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error("Error placing order:", error);
+                alert("Network error, please try again.");
+            }
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

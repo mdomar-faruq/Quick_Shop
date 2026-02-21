@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -63,6 +64,7 @@ class AdminSurjoController extends Controller
 
         DB::table('categories')->insert([
             'name'       => $request->name,
+            'slug' => Str::slug($request->name),
             'image'      => $fullUrl,
             'user_id'       => Auth::user()->id,
             'created_at' => now(),
@@ -87,6 +89,7 @@ class AdminSurjoController extends Controller
 
         $data = [
             'name'       => $request->name,
+            'slug' => Str::slug($request->name),
             'user_id'       => Auth::user()->id,
             'updated_at' => now(),
         ];
@@ -129,7 +132,6 @@ class AdminSurjoController extends Controller
     //Product
     public function adminProduct()
     {
-
         $products = DB::table('products')
             ->leftJoin('categories', 'products.category_id', 'categories.id')
             ->select('products.*', 'categories.name as cat_name')
@@ -237,6 +239,121 @@ class AdminSurjoController extends Controller
         }
     }
 
+    //Blog
+    public function adminBlog()
+    {
+        $blogs = DB::table('blogs')
+            ->leftJoin('categories', 'blogs.category_id', 'categories.id')
+            ->select('blogs.*', 'categories.name as cat_name')
+            ->get();
+        return view('backend.blogs.index', compact('blogs'));
+    }
+    public function adminAddBlog()
+    {
+        $categories = DB::table('categories')->get();
+        return view('backend.blogs.add', compact('categories'));
+    }
+
+    public function adminBlogStore(Request $request)
+    {
+        // ✅ Validation
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|integer',
+            'offer_price_text' => 'required|string|max:255',
+            'offer_price' => 'required|numeric|min:0',
+            'regular_price' => 'required|numeric|min:0',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'short_description' => 'nullable|string',
+        ]);
+
+        // ✅ Handle multiple images
+        $paths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('blogs', 'public'); // stored in storage/app/public/blogs
+                $paths[] = asset('storage/' . $path);
+            }
+        }
+
+        // ✅ Insert into blogs table using Query Builder
+        DB::table('blogs')->insert([
+            'title' => $request->title,
+            'category_id' => $request->category_id,
+            'offer_price_text' => $request->offer_price_text,
+            'offer_price' => $request->offer_price,
+            'regular_price' => $request->regular_price,
+            'images' => json_encode($paths), // store as JSON
+            'short_description' => $request->short_description,
+            'status' => 1,
+            'user_id'       => Auth::user()->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        return redirect()->route('adminBlog')->with('success', 'Blog added successfully!');
+    }
+
+    public function adminBlogEdit($id)
+    {
+        $categories = DB::table('categories')->get();
+        $blog = DB::table('blogs')->where('id', $id)->first();
+        return view('backend.blogs.edit', compact('blog', 'categories'));
+    }
+
+    public function adminBlogUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|integer',
+            'offer_price_text' => 'required|string|max:255',
+            'offer_price' => 'required|numeric|min:0',
+            'regular_price' => 'required|numeric|min:0',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'short_description' => 'nullable|string',
+        ]);
+
+        $blog = DB::table('blogs')->where('id', $id)->first();
+
+        $paths = json_decode($blog->images, true) ?? [];
+
+        if ($request->hasFile('images')) {
+            $paths = []; // replace old images, or merge if you prefer
+            foreach ($request->file('images') as $file) {
+                $storedPath = $file->store('blogs', 'public');
+                $paths[] = url('storage/' . $storedPath); // full URL
+            }
+        }
+
+        DB::table('blogs')->where('id', $id)->update([
+            'title' => $request->title,
+            'category_id' => $request->category_id,
+            'offer_price_text' => $request->offer_price_text,
+            'offer_price' => $request->offer_price,
+            'regular_price' => $request->regular_price,
+            'images' => json_encode($paths),
+            'short_description' => $request->short_description,
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('adminBlog')->with('success', 'Blog updated successfully!');
+    }
+
+
+
+    public function adminBlogEnableDisable(Request $request, $id)
+    {
+        try {
+            DB::table('blogs')
+                ->where('id', $id)
+                ->update(['status' => $request->txt_status]); // ✅ use key => value
+
+            return back()->with('success', 'updated successfully!');
+        } catch (\Exception $e) {
+            // This will tell you exactly what is wrong in your browser's Network Tab
+            return back()->with('error', $e->getMessage());
+        }
+    }
+    //End Blog
 
     //
     public function recentOrder()

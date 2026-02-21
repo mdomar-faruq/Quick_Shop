@@ -12,6 +12,57 @@ class SurjoController extends Controller
         return view('frontend.surjo_final');
         // return view('frontend.surjo');
     }
+    public function getCategoriesWithProduct()
+    {
+        $rows = DB::table('categories')
+            ->join('products', 'categories.id', '=', 'products.category_id')
+            ->select(
+                'categories.slug as category_slug',   // use slug instead of numeric ID
+                'categories.name as category_name',
+                'categories.image as flag',
+                'products.id as kit_id',
+                'products.name as kit_name',
+                'products.price',
+                'products.image as img'
+            )
+            ->where('categories.status', 1)
+            ->where('products.status', 1)
+            ->get();
+
+        $teams = [];
+
+        foreach ($rows as $row) {
+            $id = $row->category_slug; // short code like 'fr', 'br', 'jp'
+
+            if (!isset($teams[$id])) {
+                $teams[$id] = [
+                    'id'   => $id,
+                    'name' => $row->category_name,
+                    'flag' => $row->flag,
+                    'kits' => []
+                ];
+            }
+
+            $teams[$id]['kits'][] = [
+                'id'    => $row->kit_id,
+                'name'  => $row->kit_name,
+                'price' => $row->price,
+                'img'   => $row->img,
+            ];
+        }
+
+        return response()->json(array_values($teams));
+    }
+    public function apiBlogs()
+    {
+        $blogs = DB::table('blogs')
+            ->leftJoin('categories', 'blogs.category_id', 'categories.id')
+            ->select('blogs.*', 'categories.slug')
+            ->where('blogs.status', 1)
+            ->get();
+        return response()->json($blogs);
+    }
+
     public function apiProduct()
     {
         $products = DB::table('products')->where('status', 1)->get();
@@ -21,20 +72,36 @@ class SurjoController extends Controller
     public function surjoOrderStore(Request $request)
     {
         try {
-            DB::table('orders')->insert([
-                'customer_name' => $request->name,
-                'mobile'        => $request->mobile,
-                'address'       => $request->address,
-                'cart_details'  => json_encode($request->cart),
-                'total_amount'         => $request->total,
-                'created_at'    => now(),
-                'updated_at'    => now() // DB::insert requires you to manually add this
+            // Validate input
+            $request->validate([
+                // 'customer_name' => 'required|string|max:255',
+                'mobile'        => 'required|max:20',
+                // 'address'       => 'required|string|max:500',
+                'cart'          => 'required|array|min:1',
+                'total'         => 'required|numeric|min:0'
             ]);
 
-            return response()->json(['status' => 'Order Received'], 200);
+            // Insert into orders table
+            DB::table('orders')->insert([
+                'customer_name' => $request->customer_name,
+                'mobile'        => $request->mobile,
+                'address'       => $request->address,
+                'cart_details'  => json_encode($request->cart), // store cart as JSON
+                'total_amount'  => $request->total,
+                'status'        => 'pending',
+                'created_at'    => now(),
+                'updated_at'    => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Order Received'
+            ], 200);
         } catch (\Exception $e) {
-            // This will tell you exactly what is wrong in your browser's Network Tab
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'error'   => $e->getMessage()
+            ], 500);
         }
     }
 }

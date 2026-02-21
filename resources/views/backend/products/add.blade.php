@@ -72,7 +72,7 @@
                                 <button type="submit" class="btn btn-success btn-lg">
                                     <i class="bi bi-save me-2"></i>Save Product
                                 </button>
-                                <a href="{{ route('adminProduct') }}" class="btn btn-light">Cancel</a>
+                                <a href="{{ route('adminProduct') }}" class="btn btn-warning">Cancel</a>
                             </div>
                         </form>
                     </div>

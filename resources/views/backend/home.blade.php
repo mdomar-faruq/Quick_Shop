@@ -18,7 +18,7 @@
                                 <i class="bi bi-box-seam fs-3"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="text-secondary mb-1">Total Stock</h6>
+                                <h6 class="text-secondary mb-1">Total Order</h6>
                                 <h4 class="mb-0 text-body">12,450</h4>
                             </div>
                         </div>
@@ -49,7 +49,7 @@
             </div>
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th class="ps-4">Order ID</th>
                             <th>Customer Info</th>
@@ -75,8 +75,17 @@
                                         @endphp
                                         @if ($items)
                                             @foreach ($items as $item)
-                                                <li>• {{ $item->name }} <span class="text-primary">(QTY
-                                                        {{ $item->qty }} PCS)</span></li>
+                                                <li>• {{ $item->name }}
+                                                    <span class="text-primary">(QTY
+                                                        {{ $item->qty }} PCS)
+                                                    </span>
+                                                    <span class="text-primary">(
+                                                        Size: {{ $item->size }})
+                                                    </span>
+                                                    <span class="text-info">(
+                                                        Code: {{ $item->product_id }})
+                                                    </span>
+                                                </li>
                                             @endforeach
                                         @else
                                             <span class="text-danger">No items data</span>

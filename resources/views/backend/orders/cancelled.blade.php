@@ -10,7 +10,7 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0 align-middle">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th class="ps-4">Order ID</th>
                                 <th>Customer Info</th>
@@ -36,8 +36,17 @@
                                             @endphp
                                             @if ($items)
                                                 @foreach ($items as $item)
-                                                    <li>• {{ $item->name }} <span class="text-primary">(QTY
-                                                            {{ $item->qty }} PCS)</span></li>
+                                                    <li>• {{ $item->name }}
+                                                        <span class="text-primary">(QTY
+                                                            {{ $item->qty }} PCS)
+                                                        </span>
+                                                        <span class="text-primary">(
+                                                            Size: {{ $item->size }})
+                                                        </span>
+                                                        <span class="text-info">(
+                                                            Code: {{ $item->product_id }})
+                                                        </span>
+                                                    </li>
                                                 @endforeach
                                             @else
                                                 <span class="text-danger">No items data</span>
@@ -45,7 +54,7 @@
                                         </ul>
                                     </td>
                                     <td class="fw-bold text-success">
-                                        TK{{ number_format($order->total_amount, 2) }}
+                                        Tk{{ number_format($order->total_amount, 2) }}
                                     </td>
                                     <td class="text-muted small">
                                         {{ date('d M, Y', strtotime($order->created_at)) }}<br>

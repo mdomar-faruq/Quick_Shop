@@ -3,9 +3,9 @@
 @section('content')
     <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Product</h2>
-            <a href="{{ route('adminAddProduct') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Add New Product
+            <h2 class="fw-bold">Blogs</h2>
+            <a href="{{ route('adminAddBlog') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add New Blogs
             </a>
         </div>
 
@@ -15,20 +15,41 @@
                     <table class="table table-hover mb-0 align-middle">
                         <thead>
                             <tr>
-                                <th class="ps-4">Image</th>
-                                <th>Category Name</th>
-                                <th>Product Name</th>
-                                <th>Price</th>
+                                <th class="ps-4">SL No</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Offer Price</th>
+                                <th>Regular Price</th>
+                                <th>Image</th>
                                 <th>Status</th>
-                                <th>Code</th>
                                 <th class="text-end pe-4">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($products as $product)
+                            @forelse($blogs as $key=>$blog)
                                 <tr>
+                                    <td class="fw-semibold">{{ $key + 1 }}</td>
+                                    <td class="fw-semibold">{{ $blog->title }}</td>
+                                    <td class="fw-semibold">{{ $blog->cat_name }}</td>
+                                    <td class="fw-semibold">{{ $blog->offer_price_text }}
+                                        <strong>{{ $blog->offer_price }}</strong>
+                                    </td>
+                                    <td class="fw-semibold text-muted">{{ $blog->regular_price }}</td>
                                     <td class="ps-4">
-                                        @if ($product->image)
+
+                                        @php
+                                            $images = json_decode($blog->images, true);
+                                        @endphp
+                                        @if ($images)
+                                            <div class="d-flex flex-wrap gap-2">
+                                                @foreach ($images as $img)
+                                                    <img src="{{ $img }}" alt="Blog image"
+                                                        style="width:80px; height:80px; object-fit:cover; border-radius:4px;">
+                                                @endforeach
+                                            </div>
+                                        @endif
+
+                                        {{-- @if ($product->image)
                                             <img src="{{ $product->image }}" class="rounded shadow-sm" width="50"
                                                 height="50" style="object-fit: cover;">
                                         @else
@@ -36,35 +57,31 @@
                                                 style="width: 50px; height: 50px;">
                                                 <i class="bi bi-image text-muted"></i>
                                             </div>
-                                        @endif
+                                        @endif --}}
                                     </td>
-                                    <td class="fw-semibold">{{ $product->name }}</td>
-                                    <td class="fw-semibold">{{ $product->cat_name }}</td>
-                                    <td>Tk{{ number_format($product->price, 2) }}</td>
                                     <td>
-                                        <form action="{{ route('adminProductEnableDisable', $product->id) }}" method="POST"
+                                        <form action="{{ route('adminBlogEnableDisable', $blog->id) }}" method="POST"
                                             class="d-inline">
                                             @csrf
                                             <div class="btn-group" role="group" aria-label="Enable/Disable">
                                                 <input type="radio" class="btn-check" name="txt_status"
-                                                    id="enableBtn_{{ $product->id }}" value="1" autocomplete="off"
+                                                    id="enableBtn_{{ $blog->id }}" value="1" autocomplete="off"
                                                     onchange="this.form.submit()"
-                                                    {{ $product->status == 1 ? 'checked' : '' }}>
+                                                    {{ $blog->status == 1 ? 'checked' : '' }}>
                                                 <label class="btn btn-outline-success"
-                                                    for="enableBtn_{{ $product->id }}">Enable</label>
+                                                    for="enableBtn_{{ $blog->id }}">Enable</label>
 
                                                 <input type="radio" class="btn-check" name="txt_status"
-                                                    id="disableBtn_{{ $product->id }}" value="2" autocomplete="off"
+                                                    id="disableBtn_{{ $blog->id }}" value="2" autocomplete="off"
                                                     onchange="this.form.submit()"
-                                                    {{ $product->status == 2 ? 'checked' : '' }}>
+                                                    {{ $blog->status == 2 ? 'checked' : '' }}>
                                                 <label class="btn btn-outline-danger"
-                                                    for="disableBtn_{{ $product->id }}">Disable</label>
+                                                    for="disableBtn_{{ $blog->id }}">Disable</label>
                                             </div>
                                         </form>
                                     </td>
-                                    <td class="fw-semibold">{{ $product->id }}</td>
                                     <td class="text-end pe-4">
-                                        <a href="{{ route('adminProductEdit', $product->id) }}"
+                                        <a href="{{ route('adminBlogEdit', $blog->id) }}"
                                             class="btn btn-sm btn-outline-primary me-1">
                                             Edit
                                         </a>
