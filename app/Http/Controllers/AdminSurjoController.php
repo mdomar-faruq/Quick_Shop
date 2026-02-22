@@ -263,7 +263,7 @@ class AdminSurjoController extends Controller
             'offer_price_text' => 'required|string|max:255',
             'offer_price' => 'required|numeric|min:0',
             'regular_price' => 'required|numeric|min:0',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,JPEG,JPG,PNG',
             'short_description' => 'nullable|string',
         ]);
 
@@ -308,7 +308,7 @@ class AdminSurjoController extends Controller
             'offer_price_text' => 'required|string|max:255',
             'offer_price' => 'required|numeric|min:0',
             'regular_price' => 'required|numeric|min:0',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'nullable|mimes:jpeg,png,jpg,gif,JPEG,JPG,PNG',
             'short_description' => 'nullable|string',
         ]);
 

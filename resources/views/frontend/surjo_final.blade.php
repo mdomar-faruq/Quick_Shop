@@ -19,9 +19,18 @@
         }
 
         .flag-card.active {
-            border-color: var(--primary);
+            /* border-color: var(--primary);
             background: #f0f7ff;
-            box-shadow: 0 0 10px rgba(13, 110, 253, 0.1);
+            box-shadow: 0 0 10px rgba(13, 110, 253, 0.1); */
+
+            padding: 10px;
+            /* Decreased from 8px for a cleaner look */
+            /* background: linear-gradient(270deg, #8a2be2, #00ffff, #4b0082, #8a2be2); */
+            background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4, #fbc2eb);
+            border-radius: 15px;
+            animation: moveGradient 6s ease infinite;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
 
         .flag-img {
@@ -333,51 +342,63 @@
     {{-- //Blog --}}
     <script>
         renderHeroDeals();
+
         async function renderHeroDeals() {
             try {
                 const response = await fetch('/api/blogs');
-                const blogs = await response.json();
-                console.log(blogs);
-                const container = document.getElementById('blog_div');
-                container.innerHTML = blogs.map((p, idx) => `
-            <div class="row align-items-center mt-${idx > 0 ? 5 : 0}">
-                <div class="col-lg-6">
-                    <div class="animated-border-box">
-                        <div id="carousel-${p.id}" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                               ${(p.images && p.images.length > 0 ? p.images : ['https://placehold.co/300x300?text=BR+Yellow']).map((img, i) => `
-                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                    <img src="${img}" class="d-block w-100 carousel-img" 
-                                                        alt="${p.title} Image ${i+1}" 
-                                                        onerror="this.onerror=null;this.src='https://placehold.co/300x300?text=BR+Yellow';">
-                                                </div>
-                                            `).join('')}
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                const data = await response.json();
+                console.log("API response:", data);
 
-                <div class="col-lg-6 text-center px-lg-5 mt-4 mt-lg-0">
-                    <span class="badge bg-danger mb-2">HOT DEAL</span>
-                    <h1 class="display-3 fw-bold">${p.title}</h1>
-                    <div class="my-3">
-                        <span class="old-price">${p.regular_price} Tk</span> <br>
-                        <span class="new-price">${p.offer_price_text} ${p.offer_price} Tk</span>
-                    </div>
-                    <p class="lead text-muted mb-4">${p.short_description}</p>
-                    <div class="d-grid gap-2 d-md-block">
-                        <button class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow-sm"
-                            onclick="scrollToTeam('${p.slug}')">অর্ডার করতে চাই</button>
-                    </div>
+                // Normalize: if it's already an array, use it; if it's wrapped, extract it
+                const blogs = Array.isArray(data) ? data : (data.blogs || []);
+
+                const container = document.getElementById('blog_div');
+
+                // Render only if we have valid array
+                if (blogs.length > 0) {
+                    container.innerHTML = blogs.map((p, idx) => `
+          <div class="row align-items-center mt-${idx > 0 ? 5 : 0}">
+            <div class="col-lg-6">
+              <div class="animated-border-box">
+                <div id="carousel-${p.id}" class="carousel slide" data-bs-ride="carousel">
+                  <div class="carousel-inner">
+                    ${(Array.isArray(p.images) && p.images.length > 0 ? p.images : ['https://placehold.co/300x300?text=BR+Yellow'])
+                      .map((img, i) => `
+                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                  <img src="${img}" class="d-block w-100 carousel-img"
+                                       alt="${p.title} Image ${i+1}"
+                                       onerror="this.onerror=null;this.src='https://placehold.co/300x300?text=BR+Yellow';">
+                                </div>
+                              `).join('')}
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                  </button>
                 </div>
+              </div>
             </div>
+
+            <div class="col-lg-6 text-center px-lg-5 mt-4 mt-lg-0">
+              <span class="badge bg-danger mb-2">HOT DEAL</span>
+              <h1 class="display-3 fw-bold">${p.title}</h1>
+              <div class="my-3">
+                <span class="old-price">${p.regular_price} Tk</span> <br>
+                <span class="new-price">${p.offer_price_text} ${p.offer_price} Tk</span>
+              </div>
+              <p class="lead text-muted mb-4">${p.short_description}</p>
+              <div class="d-grid gap-2 d-md-block">
+                <button class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow-sm"
+                        onclick="scrollToTeam('${p.slug}')">অর্ডার করতে চাই</button>
+              </div>
+            </div>
+          </div>
         `).join('');
+                } else {
+                    container.innerHTML = "<p>No deals available right now.</p>";
+                }
             } catch (err) {
                 console.error("Error loading hero deals:", err);
             }

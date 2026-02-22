@@ -59,8 +59,14 @@ class SurjoController extends Controller
             ->leftJoin('categories', 'blogs.category_id', 'categories.id')
             ->select('blogs.*', 'categories.slug')
             ->where('blogs.status', 1)
-            ->get();
-        return response()->json($blogs);
+            ->get()
+            ->map(function ($blog) {
+                // Decode images if stored as JSON string
+                $blog->images = $blog->images ? json_decode($blog->images, true) : [];
+                return $blog;
+            });
+
+        return response()->json($blogs, 200, [], JSON_UNESCAPED_SLASHES);
     }
 
     public function apiProduct()
