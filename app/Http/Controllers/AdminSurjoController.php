@@ -356,6 +356,17 @@ class AdminSurjoController extends Controller
     //End Blog
 
     //
+    public function orderView($id)
+    {
+        $order = DB::table('orders')
+            ->where('id', $id)
+            ->first();
+        if ($order) {
+            return view('backend.orders.view', compact('order'));
+        } else {
+            return back()->with('error', "Data Not Found");
+        }
+    }
     public function recentOrder()
     {
         $orders = DB::table('orders')
@@ -363,6 +374,14 @@ class AdminSurjoController extends Controller
             ->limit('50')
             ->get();
         return view('backend.orders.recent', compact('orders'));
+    }
+    public function confirmOrder()
+    {
+        $orders = DB::table('orders')
+            ->where('status', "confirm")
+            ->orderBy('id', 'desc')
+            ->get();
+        return view('backend.orders.confirm', compact('orders'));
     }
     public function pendingOrder()
     {

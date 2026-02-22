@@ -17,6 +17,7 @@
                                 <th>Items Purchased</th>
                                 <th>Total Amount</th>
                                 <th>Date</th>
+                                <th>View</th>
                                 <th class="text-end pe-4">Actions</th>
                             </tr>
                         </thead>
@@ -59,6 +60,12 @@
                                     <td class="text-muted small">
                                         {{ date('d M, Y', strtotime($order->created_at)) }}<br>
                                         {{ date('h:i A', strtotime($order->created_at)) }}
+                                    </td>
+                                    <td class="fw-bold">
+                                        <a href="{{ route('orderView', $order->id) }}"
+                                            class="btn btn-sm btn-info text-white">
+                                            INVOICE PREVIEW
+                                        </a>
                                     </td>
                                     <td class="text-center">
                                         <div class="dropdown">

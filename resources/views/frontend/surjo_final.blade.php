@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Sports T-Shirt Store</title>
+    <title>Surjo Sports</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Flag Grid */
@@ -129,9 +129,14 @@
             background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4, #fbc2eb);
             background-size: 400% 400%;
             border-radius: 15px;
-            animation: moveGradient 6s ease infinite;
+            /* animation: moveGradient 6s ease infinite; */
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .carousel-item {
+            transition: transform 0.6s ease-in-out;
+            /* Speed of the sliding motion itself */
         }
 
         /* 2. Focused Image Styling for T-Shirts */
@@ -149,7 +154,7 @@
             border-radius: 0px;
         }
 
-        /* Animation Speed */
+        /* Animation Speed , image border colore */
         @keyframes moveGradient {
             0% {
                 background-position: 0% 50%;
@@ -305,14 +310,15 @@
                         <div class="mt-3 pt-2 border-top">
                             <div class="d-flex justify-content-between fw-800 mb-3">
                                 <span>Total:</span>
-                                <span class="text-primary">$<span id="total-val">0</span></span>
+                                <span class="text-primary"><span id="total-val">0</span> TK</span>
                             </div>
 
                             <form id="order-form">
                                 <input type="text" id="c-name" class="form-control form-control-sm mb-1"
                                     placeholder="Customer Name">
                                 <input type="tel" id="c-mobile" class="form-control form-control-sm mb-1"
-                                    placeholder="Mobile" required>
+                                    placeholder="Mobile" required pattern="^[0-9]{11}$"
+                                    title="Enter a valid 11-digit mobile number">
                                 <textarea id="c-addr" class="form-control form-control-sm mb-2" rows="2" placeholder="Full Address"></textarea>
 
                                 <!-- Cash On Delivery Checkbox -->
@@ -338,6 +344,7 @@
         {{-- //end continer --}}
     </section>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     {{-- //Blog --}}
     <script>
@@ -360,16 +367,16 @@
           <div class="row align-items-center mt-${idx > 0 ? 5 : 0}">
             <div class="col-lg-6">
               <div class="animated-border-box">
-                <div id="carousel-${p.id}" class="carousel slide" data-bs-ride="carousel">
+                <div id="carousel-${p.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
                   <div class="carousel-inner">
                     ${(Array.isArray(p.images) && p.images.length > 0 ? p.images : ['https://placehold.co/300x300?text=BR+Yellow'])
                       .map((img, i) => `
                                 <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                  <img src="${img}" class="d-block w-100 carousel-img"
-                                       alt="${p.title} Image ${i+1}"
-                                       onerror="this.onerror=null;this.src='https://placehold.co/300x300?text=BR+Yellow';">
+                                    <img src="${img}" class="d-block w-100 carousel-img"
+                                        alt="${p.title} Image ${i+1}"
+                                        onerror="this.onerror=null;this.src='https://placehold.co/300x300?text=BR+Yellow';">
                                 </div>
-                              `).join('')}
+                                `).join('')}
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon"></span>
@@ -403,6 +410,17 @@
                 console.error("Error loading hero deals:", err);
             }
         }
+
+        //
+        document.addEventListener("DOMContentLoaded", () => {
+            const carousels = document.querySelectorAll('.carousel');
+            carousels.forEach(c => {
+                new bootstrap.Carousel(c, {
+                    interval: 3000, // 3 seconds
+                    ride: 'carousel'
+                });
+            });
+        });
     </script>
 
     {{-- //Product & order --}}
@@ -470,7 +488,7 @@
                         <option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option>
                     </select>
                 </td>
-                <td class="fw-bold text-primary small">$${k.price}</td>
+                <td class="fw-bold text-primary small">${k.price} TK</td>
                 <td class="text-end">
                    <button class="btn btn-dark btn-sm rounded-circle py-0 px-2"
                       onclick="addToCart(${k.id}, '${k.name}', ${k.price}, '${k.img}', 's-${k.id}')">+</button>
@@ -543,7 +561,7 @@
                         <span class="fw-bold" style="font-size:10px;">${i.qty}</span>
                         <button class="qty-btn" onclick="changeQty(${i.product_id}, 1)">+</button>
                     </div>
-                    <span class="fw-bold small" style="min-width:30px">$${i.price * i.qty}</span>
+                    <span class="fw-bold small" style="min-width:30px">${i.price * i.qty} TK</span>
                 </div>
             </div>`).join('');
             document.getElementById('total-val').innerText = cart.reduce((a, c) => a + (c.price * c.qty), 0);
@@ -635,7 +653,7 @@
         });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

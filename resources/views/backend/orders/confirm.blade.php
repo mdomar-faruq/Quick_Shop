@@ -3,7 +3,7 @@
 @section('content')
     <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Cancelled Orders</h2>
+            <h2 class="fw-bold">Confirm</h2>
         </div>
 
         <div class="card shadow-sm">
@@ -89,8 +89,7 @@
                                                         method="POST">
                                                         @csrf
                                                         <input type="hidden" name="status" value="confirm">
-                                                        <button type="submit"
-                                                            class="dropdown-item text-info">Confirm</button>
+                                                        <button type="submit" class="dropdown-item">Confirm</button>
                                                     </form>
                                                 </li>
                                                 <li>

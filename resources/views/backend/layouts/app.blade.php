@@ -94,12 +94,13 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-box-seam me-1"></i>Pre Order
+                            <i class="bi bi-box-seam me-1"></i>Order Status
                         </a>
                         <ul class="dropdown-menu border-0 shadow-sm">
                             <li><a class="dropdown-item" href="{{ route('pendingOrder') }}">Pending</a></li>
+                            <li><a class="dropdown-item" href="{{ route('confirmOrder') }}">Confirm</a></li>
                             <li><a class="dropdown-item" href="{{ route('deliveredOrder') }}">Deliverd</a></li>
-                            <li><a class="dropdown-item" href="{{ route('cancelledOrder') }}">cancelled</a></li>
+                            <li><a class="dropdown-item" href="{{ route('cancelledOrder') }}">Cancelled</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

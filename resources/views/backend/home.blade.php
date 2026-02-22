@@ -56,6 +56,7 @@
                             <th>Items Purchased</th>
                             <th>Total Amount</th>
                             <th>Date</th>
+                            <th>View</th>
                             <th class="text-end pe-4">Actions</th>
                         </tr>
                     </thead>
@@ -99,6 +100,11 @@
                                     {{ date('d M, Y', strtotime($order->created_at)) }}<br>
                                     {{ date('h:i A', strtotime($order->created_at)) }}
                                 </td>
+                                <td class="fw-bold">
+                                    <a href="{{ route('orderView', $order->id) }}" class="btn btn-sm btn-info text-white">
+                                        INVOICE PREVIEW
+                                    </a>
+                                </td>
                                 <td class="text-center">
                                     <div class="dropdown">
                                         <button
@@ -114,6 +120,14 @@
                                                     @csrf
                                                     <input type="hidden" name="status" value="pending">
                                                     <button type="submit" class="dropdown-item">Pending</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form action="{{ route('adminOrderUpdateStatus', $order->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="status" value="confirm">
+                                                    <button type="submit" class="dropdown-item text-info">Confirm</button>
                                                 </form>
                                             </li>
                                             <li>
@@ -138,6 +152,7 @@
                                     </div>
                                 </td>
                             </tr>
+
                         @empty
                             <tr>
                                 <td colspan="6" class="text-center py-5 text-muted">No orders found.</td>

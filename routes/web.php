@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SurjoController;
 use App\Http\Controllers\AdminSurjoController;
@@ -53,7 +54,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
  Route::post('/blog/enable_or_disable/{id}', [AdminSurjoController::class, 'adminBlogEnableDisable'])->name('adminBlogEnableDisable');
 
  //orders
+ Route::get('/order_view/{id}', [AdminSurjoController::class, 'orderView'])->name('orderView');
  Route::get('/recent_order', [AdminSurjoController::class, 'recentOrder'])->name('recentOrder');
+ Route::get('/confirm_order', [AdminSurjoController::class, 'confirmOrder'])->name('confirmOrder');
  Route::get('/pending_order', [AdminSurjoController::class, 'pendingOrder'])->name('pendingOrder');
  Route::get('/cancelled_order', [AdminSurjoController::class, 'cancelledOrder'])->name('cancelledOrder');
  Route::get('/delivered_order', [AdminSurjoController::class, 'deliveredOrder'])->name('deliveredOrder');
