@@ -75,8 +75,8 @@
         }
 
         .product-thumb {
-            width: 40px;
-            height: 40px;
+            width: 100px;
+            height: 100px;
             object-fit: cover;
             border-radius: 4px;
         }
@@ -321,11 +321,27 @@
                                     title="Enter a valid 11-digit mobile number">
                                 <textarea id="c-addr" class="form-control form-control-sm mb-2" rows="2" placeholder="Full Address"></textarea>
 
+                                <div class="bg-light p-2 rounded mb-2 border">
+                                    <label class="fw-bold small d-block mb-1">Select Delivery Area:</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="delivery-area"
+                                            id="inside-dhaka" value="60" onchange="updateTotal()" required>
+                                        <label class="form-check-label small" for="inside-dhaka">Inside Dhaka (60
+                                            TK)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="delivery-area"
+                                            id="outside-dhaka" value="120" onchange="updateTotal()" required>
+                                        <label class="form-check-label small" for="outside-dhaka">Outside Dhaka (120
+                                            TK)</label>
+                                    </div>
+                                </div>
+
                                 <!-- Cash On Delivery Checkbox -->
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="cod-check">
-                                    <label class="form-check-label fw-bold" for="cod-check">
-                                        Cash On Delivery
+                                    <label class="form-check-label" for="cod-check">
+                                        I aggree Cash On Delivery
                                     </label>
                                 </div>
 
@@ -347,62 +363,65 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     {{-- //Blog --}}
-    <script>
-        renderHeroDeals();
 
+    <script>
         async function renderHeroDeals() {
             try {
                 const response = await fetch('/api/blogs');
                 const data = await response.json();
-                console.log("API response:", data);
-
-                // Normalize: if it's already an array, use it; if it's wrapped, extract it
                 const blogs = Array.isArray(data) ? data : (data.blogs || []);
-
                 const container = document.getElementById('blog_div');
 
-                // Render only if we have valid array
                 if (blogs.length > 0) {
                     container.innerHTML = blogs.map((p, idx) => `
-          <div class="row align-items-center mt-${idx > 0 ? 5 : 0}">
-            <div class="col-lg-6">
-              <div class="animated-border-box">
-                <div id="carousel-${p.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-                  <div class="carousel-inner">
-                    ${(Array.isArray(p.images) && p.images.length > 0 ? p.images : ['https://placehold.co/300x300?text=BR+Yellow'])
-                      .map((img, i) => `
-                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                    <img src="${img}" class="d-block w-100 carousel-img"
-                                        alt="${p.title} Image ${i+1}"
-                                        onerror="this.onerror=null;this.src='https://placehold.co/300x300?text=BR+Yellow';">
+                <div class="row align-items-center mt-${idx > 0 ? 5 : 0}">
+                    <div class="col-lg-6">
+                        <div class="animated-border-box">
+                            <div id="carousel-${p.id}" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    ${(Array.isArray(p.images) && p.images.length > 0 ? p.images : ['https://placehold.co/300x300?text=No+Image'])
+                                      .map((img, i) => `
+                                                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                            <img src="${img}" class="d-block w-100 carousel-img" 
+                                                                                                                 alt="${p.title}" 
+                                                                                                                 onerror="this.src='https://placehold.co/300x300?text=Image not Found';">
+                                                                                                        </div>
+                                                                                                    `).join('')}
                                 </div>
-                                `).join('')}
-                  </div>
-                  <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                  </button>
-                  <button class="carousel-control-next" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                  </button>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 text-center px-lg-5 mt-4 mt-lg-0">
+                        <span class="badge bg-danger mb-2">HOT DEAL</span>
+                        <h1 class="display-3 fw-bold">${p.title}</h1>
+                        <div class="my-3">
+                            <span class="old-price">${p.regular_price} Tk</span> <br>
+                            <span class="new-price">${p.offer_price_text || 'Today:'} ${p.offer_price} Tk</span>
+                        </div>
+                        <p class="lead text-muted mb-4">${p.short_description}</p>
+                        <div class="d-grid gap-2 d-md-block">
+                            <button class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow-sm"
+                                    onclick="scrollToTeam('${p.slug}')">অর্ডার করতে চাই</button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
+            `).join('');
 
-            <div class="col-lg-6 text-center px-lg-5 mt-4 mt-lg-0">
-              <span class="badge bg-danger mb-2">HOT DEAL</span>
-              <h1 class="display-3 fw-bold">${p.title}</h1>
-              <div class="my-3">
-                <span class="old-price">${p.regular_price} Tk</span> <br>
-                <span class="new-price">${p.offer_price_text} ${p.offer_price} Tk</span>
-              </div>
-              <p class="lead text-muted mb-4">${p.short_description}</p>
-              <div class="d-grid gap-2 d-md-block">
-                <button class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow-sm"
-                        onclick="scrollToTeam('${p.slug}')">অর্ডার করতে চাই</button>
-              </div>
-            </div>
-          </div>
-        `).join('');
+                    // --- KEY FIX: Initialize carousels AFTER HTML is injected ---
+                    const carouselElList = container.querySelectorAll('.carousel');
+                    carouselElList.forEach(carouselEl => {
+                        new bootstrap.Carousel(carouselEl, {
+                            interval: 3000,
+                            ride: 'carousel'
+                        });
+                    });
+
                 } else {
                     container.innerHTML = "<p>No deals available right now.</p>";
                 }
@@ -411,16 +430,8 @@
             }
         }
 
-        //
-        document.addEventListener("DOMContentLoaded", () => {
-            const carousels = document.querySelectorAll('.carousel');
-            carousels.forEach(c => {
-                new bootstrap.Carousel(c, {
-                    interval: 3000, // 3 seconds
-                    ride: 'carousel'
-                });
-            });
-        });
+        // Start the process
+        renderHeroDeals();
     </script>
 
     {{-- //Product & order --}}
@@ -576,6 +587,14 @@
 
             loadKits(id);
         }
+
+
+        function updateTotal() {
+            const cartBaseTotal = cart.reduce((a, c) => a + (c.price * c.qty), 0);
+            const deliveryEl = document.querySelector('input[name="delivery-area"]:checked');
+            const deliveryCharge = deliveryEl ? parseInt(deliveryEl.value) : 0;
+            document.getElementById('total-val').innerText = cartBaseTotal + deliveryCharge;
+        }
     </script>
 
     <script>
@@ -594,22 +613,31 @@
             const mobile = document.getElementById('c-mobile').value;
             const address = document.getElementById('c-addr').value;
 
+            // Get Delivery Area Data
+            const deliveryEl = document.querySelector('input[name="delivery-area"]:checked');
+            const deliveryCharge = deliveryEl ? parseInt(deliveryEl.value) : 0;
+            const deliveryType = deliveryEl ? (deliveryEl.id === 'inside-dhaka' ? 'Inside Dhaka' :
+                'Outside Dhaka') : '';
+
             // cart items should include size, qty, price, etc.
             const cart = JSON.parse(localStorage.getItem('kitShopCart')) || [];
-            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
             const payload = {
                 customer_name: customerName,
                 mobile: mobile,
                 address: address,
+                delivery_type: deliveryType,
+                delivery_charge: deliveryCharge,
                 cart: cart.map(item => ({
-                    product_id: item.product_id, // actual product table ID
+                    product_id: item.product_id,
                     name: item.name,
                     size: item.size,
                     qty: item.qty,
                     price: item.price
                 })),
-                total: totalAmount
+                subtotal: subtotal,
+                total: subtotal + deliveryCharge
             };
 
             console.log("Payload being sent:", payload);

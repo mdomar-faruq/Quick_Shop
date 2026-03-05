@@ -150,7 +150,7 @@ class AdminSurjoController extends Controller
             'name'  => 'required|string|max:255',
             'category_id'  => 'required',
             'price' => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            // 'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -194,7 +194,7 @@ class AdminSurjoController extends Controller
             'name'  => 'required|string|max:255',
             'category_id'  => 'required',
             // 'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = [
@@ -263,7 +263,7 @@ class AdminSurjoController extends Controller
             'offer_price_text' => 'required|string|max:255',
             'offer_price' => 'required|numeric|min:0',
             'regular_price' => 'required|numeric|min:0',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,JPEG,JPG,PNG',
+            // 'images.*' => 'image',
             'short_description' => 'nullable|string',
         ]);
 
@@ -308,7 +308,7 @@ class AdminSurjoController extends Controller
             'offer_price_text' => 'required|string|max:255',
             'offer_price' => 'required|numeric|min:0',
             'regular_price' => 'required|numeric|min:0',
-            'images.*' => 'nullable|mimes:jpeg,png,jpg,gif,JPEG,JPG,PNG',
+            // 'images.*' => 'nullable|mimes:jpeg,png,jpg,gif,JPEG,JPG,PNG',
             'short_description' => 'nullable|string',
         ]);
 

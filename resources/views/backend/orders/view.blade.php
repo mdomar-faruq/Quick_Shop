@@ -31,7 +31,7 @@
             }
 
             /* 4. Position at the absolute top and add manual padding
-                                          so content doesn't get cut off by the printer */
+                                                          so content doesn't get cut off by the printer */
             .print-area {
                 position: absolute;
                 left: 0;
@@ -106,11 +106,19 @@
                         <p class="text-muted small"><strong>Mobile:</strong> {{ $order->mobile }}</p>
                     </div>
                     <div class="col-6 text-end">
-                        <p class="text-muted text-uppercase small fw-bold mb-1">Order Status</p>
-                        <span
-                            class="badge {{ $order->status == 'delivered' ? 'bg-success' : 'bg-warning' }} text-uppercase">
-                            {{ $order->status }}
-                        </span>
+                        <p class="text-muted text-uppercase small fw-bold mb-1">Delivery Details</p>
+                        <div class="mb-2">
+                            <span class="text-dark small fw-bold">Area:</span>
+                            <span
+                                class="badge bg-info text-dark text-uppercase">{{ str_replace('_', ' ', $order->delivery_area) }}</span>
+                        </div>
+                        <div>
+                            <span class="text-dark small fw-bold">Status:</span>
+                            <span
+                                class="badge {{ $order->status == 'delivered' ? 'bg-success' : 'bg-warning' }} text-uppercase">
+                                {{ $order->status }}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -152,9 +160,21 @@
 
                 <div class="row justify-content-end">
                     <div class="col-5">
-                        <div class="d-flex justify-content-between p-2">
-                            <span class="fw-bold">Grand Total:</span>
-                            <span class="fw-bold text-primary">Tk {{ number_format($order->total_amount, 2) }}</span>
+                        <div class="border-top pt-2">
+                            <div class="d-flex justify-content-between px-2 py-1">
+                                <span class="text-muted small">Subtotal:</span>
+                                <span class="text-dark small">Tk {{ number_format($order->subtotal, 2) }}</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between px-2 py-1">
+                                <span class="text-muted small">Delivery Charge:</span>
+                                <span class="text-dark small">+ Tk {{ number_format($order->delivery_charge, 2) }}</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between px-2 py-2 mt-1 bg-light">
+                                <span class="fw-bold">Total Amount:</span>
+                                <span class="fw-bold text-primary">Tk {{ number_format($order->total_amount, 2) }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

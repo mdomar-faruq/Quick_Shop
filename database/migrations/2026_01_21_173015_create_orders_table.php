@@ -15,10 +15,18 @@ return new class extends Migration
             $table->id();
             $table->string('customer_name')->nullable();
             $table->string('mobile');
-            $table->string('address')->nullable();
-            $table->json('cart_details'); // Stores the items
-            $table->decimal('total_amount', 10, 2);
-            $table->string('status')->default('pending');
+            $table->text('address')->nullable(); // Changed to text for longer addresses
+            $table->json('cart_details');
+
+            // Financial Columns
+            $table->decimal('subtotal', 10, 2)->default(0); // Price of items only
+            $table->decimal('delivery_charge', 10, 2)->default(0); // 60 or 120
+            $table->decimal('total_amount', 10, 2); // subtotal + delivery_charge
+
+            // Logistics
+            $table->string('delivery_area')->nullable(); // e.g., 'inside_dhaka'
+            $table->string('status')->default('pending'); // pending, processing, shipped, completed, cancelled
+
             $table->timestamps();
         });
     }

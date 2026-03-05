@@ -93,7 +93,10 @@ class SurjoController extends Controller
                 'mobile'        => $request->mobile,
                 'address'       => $request->address,
                 'cart_details'  => json_encode($request->cart), // store cart as JSON
+                'delivery_charge' => $request->delivery_charge,
+                'subtotal' => $request->subtotal,
                 'total_amount'  => $request->total,
+                'delivery_area'   => $request->delivery_type,
                 'status'        => 'pending',
                 'created_at'    => now(),
                 'updated_at'    => now()
