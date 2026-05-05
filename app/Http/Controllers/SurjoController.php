@@ -7,9 +7,17 @@ use Illuminate\Support\Facades\DB;
 
 class SurjoController extends Controller
 {
-    public function surjo()
+    public function surjo(Request $request)
     {
-        return view('frontend.surjo_final');
+        $products = DB::table('products')
+            ->latest()
+            ->paginate(12);
+
+        // If it's an AJAX request, return only the product cards (not the whole page)
+        if ($request->ajax()) {
+            return view('partials.product_cards', compact('products'))->render();
+        }
+        return view('frontend.surjo_final', compact('products'));
         // return view('frontend.surjo');
     }
     public function getCategoriesWithProduct()
@@ -17,41 +25,67 @@ class SurjoController extends Controller
         $rows = DB::table('categories')
             ->join('products', 'categories.id', '=', 'products.category_id')
             ->select(
-                'categories.slug as category_slug',   // use slug instead of numeric ID
+                'categories.slug as category_slug',
                 'categories.name as category_name',
                 'categories.image as flag',
                 'products.id as kit_id',
                 'products.name as kit_name',
+                'products.slug as kit_slug',   // CRITICAL: Added this
                 'products.price',
-                'products.image as img'
+                'products.old_price',          // Added for "Platinum" design
+                'products.image as img',
+                'products.description'         // Optional: if you want a quick preview
             )
             ->where('categories.status', 1)
             ->where('products.status', 1)
+            ->orderBy('products.id', 'desc')   // Show newest kits first
             ->get();
 
         $teams = [];
 
         foreach ($rows as $row) {
-            $id = $row->category_slug; // short code like 'fr', 'br', 'jp'
+            $slug = $row->category_slug;
 
-            if (!isset($teams[$id])) {
-                $teams[$id] = [
-                    'id'   => $id,
+            if (!isset($teams[$slug])) {
+                $teams[$slug] = [
+                    'id'   => $slug,
                     'name' => $row->category_name,
                     'flag' => $row->flag,
                     'kits' => []
                 ];
             }
 
-            $teams[$id]['kits'][] = [
-                'id'    => $row->kit_id,
-                'name'  => $row->kit_name,
-                'price' => $row->price,
-                'img'   => $row->img,
+            $teams[$slug]['kits'][] = [
+                'id'        => $row->kit_id,
+                'name'      => $row->kit_name,
+                'slug'      => $row->kit_slug,     // CRITICAL: Pass this to JS
+                'price'     => $row->price,
+                'old_price' => $row->old_price,    // Pass this to show discounts
+                'img'       => $row->img,
             ];
         }
 
         return response()->json(array_values($teams));
+    }
+
+    public function getProductDetails($slug)
+    {
+        // Find product by slug
+        $product = DB::table('products')
+            ->where('slug', $slug)
+            ->where('status', 1)
+            ->first();
+
+        if (!$product) abort(404);
+
+        $similar = DB::table('products')
+            // ->where('category_id', $product->category_id) // Un-comment for relevant matches
+            ->where('id', '!=', $product->id)
+            ->inRandomOrder() // This makes the selection random
+            ->limit(4)
+            ->get();
+
+        return view('frontend.details', compact('product', 'similar'));
     }
     public function apiBlogs()
     {
@@ -104,13 +138,56 @@ class SurjoController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Order Received'
+                'message' => 'Order created'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'error'   => $e->getMessage()
             ], 500);
+        }
+    }
+    public function surjoOrderStore2(Request $request)
+    {
+        try {
+            $request->validate([
+                // 'name'       => 'required|max:255',
+                'phone'      => 'required|max:20',
+                // 'address'    => 'required|max:500',
+                'product_id' => 'required',
+                'price'      => 'required|numeric',
+                'size'       => 'required'
+            ]);
+
+            $cartDetails = [
+                [
+                    'product_id' => $request->product_id,
+                    'name'       => $request->product_name,
+                    'price'      => $request->price,
+                    'size'       => $request->size,
+                    'qty'        => 1
+                ]
+            ];
+
+            DB::table('orders')->insert([
+                'customer_name'   => $request->name,
+                'mobile'          => $request->phone,
+                'address'         => $request->address,
+                'cart_details'    => json_encode($cartDetails),
+                'delivery_charge' => $request->delivery_charge ?? 0,
+                'subtotal'        => $request->price,
+                'total_amount'    => ($request->price + ($request->delivery_charge ?? 0)),
+                'delivery_area'   => $request->delivery_type ?? 'not specified',
+                'status'          => 'pending',
+                'created_at'      => now(),
+                'updated_at'      => now()
+            ]);
+
+            // সাকসেস মেসেজ সহ আগের পেজে ফেরত পাঠানো
+            return redirect()->back()->with('success', 'ধন্যবাদ! আপনার অর্ডারটি সফলভাবে গৃহীত হয়েছে।');
+        } catch (\Exception $e) {
+            // এরর মেসেজ সহ ফেরত পাঠানো
+            return redirect()->back()->with('error', 'অর্ডার সম্পন্ন করা সম্ভব হয়নি: ' . $e->getMessage());
         }
     }
 }

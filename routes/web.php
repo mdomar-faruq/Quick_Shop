@@ -9,10 +9,12 @@ Auth::routes();
 
 //--------------------------Frontend------------------------------------------------
 Route::get('/', [SurjoController::class, 'surjo'])->name('surjo');
-Route::get('/api/categories/with_product', [SurjoController::class, 'getCategoriesWithProduct']);
-Route::get('/api/blogs', [SurjoController::class, 'apiBlogs']);
-Route::get('/api/products', [SurjoController::class, 'apiProduct']);
-Route::post('/api/orders', [SurjoController::class, 'surjoOrderStore']);
+Route::get('/v1/categories/with_product', [SurjoController::class, 'getCategoriesWithProduct']);
+Route::get('/v1/product/{slug}', [SurjoController::class, 'getProductDetails'])->name('getProductDetails');
+Route::get('/v1/blogs', [SurjoController::class, 'apiBlogs']);
+Route::get('/v1/products', [SurjoController::class, 'apiProduct']);
+Route::post('/v1/orders', [SurjoController::class, 'surjoOrderStore']);
+Route::post('/v2/orders', [SurjoController::class, 'surjoOrderStore2'])->name('placeOrder');
 
 
 
@@ -38,7 +40,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
  Route::get('/add_product', [AdminSurjoController::class, 'adminAddProduct'])->name('adminAddProduct');
  Route::post('/product', [AdminSurjoController::class, 'adminProductStore'])->name('adminProductStore');
  Route::get('/product/{id}/edit', [AdminSurjoController::class, 'adminProductEdit'])->name('adminProductEdit');
- Route::post('/product/{id}/edit', [AdminSurjoController::class, 'adminProductUpdate'])->name('adminProductUpdate');
+ Route::put('/product/{id}/edit', [AdminSurjoController::class, 'adminProductUpdate'])->name('adminProductUpdate');
  //enable or disable
  Route::post('/product/enable_or_disable/{id}', [AdminSurjoController::class, 'adminProductEnableDisable'])->name('adminProductEnableDisable');
  //end products

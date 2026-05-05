@@ -4,182 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surjo Sports | Platinum Edition</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Surjo Sports</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+
     <style>
-        /* Flag Grid */
-        .flag-card {
-            cursor: pointer;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #fff;
-            transition: 0.2s;
-            border: 1px solid #eee;
+        :root {
+            --primary: #ff4757;
+            --dark: #2f3542;
+            --glass: rgba(255, 255, 255, 0.8);
+            /* Multi-color spectrum for border animation */
+            --rainbow: linear-gradient(270deg, #ff9a9e, #fad0c4, #fbc2eb, #8b00ff);
         }
 
-        .flag-card.active {
-            /* border-color: var(--primary);
-            background: #f0f7ff;
-            box-shadow: 0 0 10px rgba(13, 110, 253, 0.1); */
-
-            padding: 10px;
-            /* Decreased from 8px for a cleaner look */
-            /* background: linear-gradient(270deg, #8a2be2, #00ffff, #4b0082, #8a2be2); */
-            background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4, #fbc2eb);
-            border-radius: 15px;
-            animation: moveGradient 6s ease infinite;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            overflow-x: hidden;
         }
 
-        .flag-img {
-            width: 100%;
-            aspect-ratio: 3/2;
-            object-fit: cover;
-        }
-
-        .flag-name {
-            padding: 5px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-        }
-
-        /* Unified Container - Compact & No Gaps */
-        .unified-container {
-            background: #fff;
-            border-radius: 12px;
-            margin-top: 20px;
-            overflow: hidden;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .product-side {
-            padding: 15px;
-            border-right: 1px solid #f0f0f0;
-        }
-
-        .cart-side {
-            padding: 15px;
-            background: #fcfdfe;
-        }
-
-        /* Table Tightening */
-        .table td {
-            padding: 6px 4px;
-            border-bottom: 1px solid #f8f9fa;
-            vertical-align: middle;
-        }
-
-        .product-thumb {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        /* Cart Items */
-        .cart-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #fff;
-            padding: 6px 10px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            border: 1px solid #f0f0f0;
-        }
-
-        .qty-box {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: #f1f5f9;
-            padding: 2px 8px;
-            border-radius: 6px;
-        }
-
-        .qty-btn {
-            border: none;
-            background: none;
-            font-weight: 800;
-            color: var(--primary);
-            font-size: 12px;
-        }
-
-        @media (max-width: 991px) {
-            .product-side {
-                border-right: none;
-                border-bottom: 1px solid #eee;
-            }
-        }
-    </style>
-
-    {{-- Coursal  --}}
-    <style>
-        /* 1. Slimmer Animated Border Box */
+        /* --- CAROUSEL & BLOG SECTION --- */
         .animated-border-box {
             position: relative;
-            padding: 10px;
-            /* Decreased from 8px for a cleaner look */
-            /* background: linear-gradient(270deg, #8a2be2, #00ffff, #4b0082, #8a2be2); */
-            background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4, #fbc2eb);
+            padding: 8px;
+            background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fbc2eb);
             background-size: 400% 400%;
-            border-radius: 15px;
-            /* animation: moveGradient 6s ease infinite; */
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .carousel-item {
-            transition: transform 0.6s ease-in-out;
-            /* Speed of the sliding motion itself */
-        }
-
-        /* 2. Focused Image Styling for T-Shirts */
         .carousel-img {
-            height: 550px;
-            /* Increased height to show more of the T-shirt */
+            height: 500px;
             width: 100%;
             object-fit: contain;
-            /* 'contain' ensures the whole T-shirt is visible without cropping */
-            background-color: #f9f9f9;
-            /* Light background for the T-shirt frame */
+            background: #fff;
         }
 
-        .carousel-inner {
-            border-radius: 0px;
-        }
-
-        /* Animation Speed , image border colore */
-        @keyframes moveGradient {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        /* Small Buttons for Carousel */
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            /* Smaller padding */
-            border-radius: 50%;
-            transform: scale(0.8);
-        }
-
-        /* Price Styling */
         .old-price {
             text-decoration: line-through;
             color: #888;
@@ -187,468 +50,554 @@
         }
 
         .new-price {
-            color: #d9534f;
-            font-weight: bold;
-            font-size: 2rem;
+            color: var(--primary);
+            font-weight: 900;
+            font-size: 2.2rem;
         }
 
-        /* Mobile Adjustments */
-        @media (max-width: 991px) {
-            .carousel-img {
-                height: 400px;
-                /* Adjusted for mobile screens */
-            }
+        /* --- ORDER PROCESS STEPS --- */
+        .step-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            transition: 0.3s;
+            border: 1px solid #eee;
+        }
 
-            .display-4 {
-                font-size: 2.5rem;
+        .step-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* --- FLAG GRID --- */
+        #team-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (min-width: 992px) {
+            #team-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
+        }
+
+        .flag-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 10px;
+            cursor: pointer;
+            transition: 0.4s;
+            border: 2px solid transparent;
+            box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
+        }
+
+        .flag-card:not(.active) {
+            opacity: 0.7;
+            filter: grayscale(40%);
+        }
+
+        .flag-card.active {
+            opacity: 1;
+            filter: grayscale(0%);
+            border-color: var(--primary);
+            transform: scale(1.05);
+            background: #fff5f6;
+        }
+
+        .flag-img {
+            width: 100%;
+            aspect-ratio: 3/2;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        /* --- PRODUCT CARDS (WIDE & ANIMATED) --- */
+        .product-drawer {
+            grid-column: 1 / -1;
+            display: none;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .product-card {
+            position: relative;
+            background: #fff;
+            border-radius: 20px;
+            padding: 4px;
+            overflow: hidden;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: var(--rainbow);
+            animation: rotate_border 6s linear infinite;
+            z-index: -1;
+        }
+
+        .product-card:hover::before {
+            animation-duration: 2s;
+            filter: blur(2px);
+        }
+
+        .product-inner {
+            background: #fff;
+            border-radius: 17px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        @keyframes rotate_border {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* --- SIZE SELECTOR --- */
+        .size-selector {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+
+        .size-label {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .size-radio:checked+.size-label {
+            background: var(--dark);
+            color: white;
+            border-color: var(--dark);
+        }
+
+        .btn-add-cart {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-add-cart:hover {
+            background: var(--dark);
+            transform: scale(1.02);
+        }
+
+        .checkout-box {
+            background: #fff;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
         }
     </style>
-
-    <style>
-        .animated-text {
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
-        }
-    </style>
-
 </head>
 
 <body>
-    <section class="hero-section py-5">
-        <div class="container">
 
-            <div id="blog_div"></div>
-
-
-            {{-- <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <div class="animated-border-box">
-                        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="https://images.unsplash.com/photo-1581338834647-b0fb40704e21?auto=format&fit=crop&w=800"
-                                        class="d-block w-100 carousel-img" alt="Brazil T-Shirt Front">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="https://images.unsplash.com/photo-1581338834647-b0fb40704e21?auto=format&fit=crop&w=800"
-                                        class="d-block w-100 carousel-img" alt="Brazil T-Shirt Back">
-                                </div>
-                            </div>
-
-                            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel"
-                                data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-
-                            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel"
-                                data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 text-center px-lg-5 mt-4 mt-lg-0">
-                    <span class="badge bg-danger mb-2">HOT DEAL</span>
-                    <h1 class="display-3 fw-bold">Brazil Home</h1>
-                    <div class="my-3">
-                        <span class="old-price">1200 Tk</span> <br>
-                        <span class="new-price">Today: 950 Tk</span>
-                    </div>
-                    <p class="lead text-muted mb-4">High-quality breathable fabric, perfect for sports and casual wear.
-                        Get the iconic look today!</p>
-
-                    <div class="d-grid gap-2 d-md-block">
-                        <button class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow-sm"
-                            onclick="scrollToTeam('br')">অর্ডার করতে চাই</button>
-                    </div>
-                </div>
-
-            </div> --}}
-
-            {{-- end carousel --}}
-
-
-
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 style="font-weight: 900; font-size: 3rem;">SURJO <span style="color:var(--primary)">SPORTS</span></h1>
+            <p class="text-muted">Premium Football Kits & Authentic Gear</p>
         </div>
-        {{-- End container --}}
 
-        <div class="container py-4">
-            <div class="row m-2">
-                <div class="col-12">
-                    <h1 class="text-center animated-text">
-                        Select Your <span class="highlight">Favorite Team</span>
-                    </h1>
+        <div id="blog_div" class="mb-5"></div>
+
+        <div id="oder_process" class="mb-5">
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="step-card shadow-sm">
+                        <span class="step-icon">👕</span>
+                        <h5 class="fw-bold">1. পছন্দের জার্সি খুঁজুন</h5>
+                        <p class="small text-muted mb-0">টিম সিলেক্ট করে আপনার জার্সিটি বাছাই করুন।</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card shadow-sm">
+                        <span class="step-icon">📏</span>
+                        <h5 class="fw-bold">2. সঠিক সাইজ দিন</h5>
+                        <p class="small text-muted mb-0">আপনার সঠিক মাপ (S-XXL) সিলেক্ট করে কার্টে যোগ করুন।</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card shadow-sm">
+                        <span class="step-icon">✅</span>
+                        <h5 class="fw-bold">3. অর্ডার কনফার্ম করুন</h5>
+                        <p class="small text-muted mb-0">আপনার ঠিকানা দিয়ে ক্যাশ অন ডেলিভারিতে অর্ডার করুন।</p>
+                    </div>
                 </div>
             </div>
-            <div class="row g-2 row-cols-2 row-cols-md-4 mb-3" id="team-grid"></div>
+        </div>
 
-            <div id="shop-anchor"></div>
+        <h2 class="fw-bold mb-4">পছন্দের টিমের জার্সি খুঁজে নিন</h2>
+        <div id="team-grid" class="mb-5"></div>
 
-            <div class="unified-container">
-                <div class="row g-0">
-                    <div class="col-lg-7 product-side">
-                        <div id="product-placeholder" class="text-center py-5 text-muted">
-                            <p class="small mb-0">Select a team above to view kits</p>
-                        </div>
-
-                        <div id="product-content" style="display:none;">
-                            <h6 id="team-title" class="fw-800 mb-3 text-primary text-uppercase"></h6>
-                            <table class="table table-sm align-middle mb-0">
-                                <tbody id="product-tbody"></tbody>
-                            </table>
-                        </div>
+        {{-- // --}}
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="checkout-box">
+                    <h3 class="fw-bold mb-4">🛒 আপনার অর্ডার তালিকা</h3>
+                    <div id="cart-list">
+                        <p class="text-muted text-center">এখনো কোনো পণ্য যোগ করা হয়নি।</p>
                     </div>
 
-                    <div class="col-lg-5 cart-side">
-                        <h6 class="fw-800 mb-3">Shopping Cart</h6>
-                        <div id="cart-list"></div>
+                    <div class="d-flex justify-content-between h4 fw-bold mt-4 p-3 bg-light rounded-4">
+                        <span>মোট খরচ:</span>
+                        <span style="color:var(--primary)"><span id="total-val">0</span> টাকা</span>
+                    </div>
 
-                        <div class="mt-3 pt-2 border-top">
-                            <div class="d-flex justify-content-between fw-800 mb-3">
-                                <span>Total:</span>
-                                <span class="text-primary"><span id="total-val">0</span> TK</span>
+                    <form id="order-form" class="mt-5">
+                        <h5 class="fw-bold mb-3">ডেলিভারি তথ্য দিন</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" name="customer_name" class="form-control py-3 rounded-4"
+                                    placeholder="আপনার নাম লিখুন">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="tel" name="mobile" class="form-control py-3 rounded-4"
+                                    placeholder="মোবাইল নম্বর লিখুন" required>
+                            </div>
+                            <div class="col-12">
+                                <textarea name="address" class="form-control py-3 rounded-4" rows="3"
+                                    placeholder="আপনার বিস্তারিত ঠিকানা লিখুন (বাসা নং, রোড, এলাকা...)"></textarea>
                             </div>
 
-                            <form id="order-form">
-                                <input type="text" id="c-name" class="form-control form-control-sm mb-1"
-                                    placeholder="Customer Name">
-                                <input type="tel" id="c-mobile" class="form-control form-control-sm mb-1"
-                                    placeholder="Mobile" required pattern="^[0-9]{11}$"
-                                    title="Enter a valid 11-digit mobile number">
-                                <textarea id="c-addr" class="form-control form-control-sm mb-2" rows="2" placeholder="Full Address"></textarea>
-
-                                <!-- Cash On Delivery Checkbox -->
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="cod-check">
-                                    <label class="form-check-label fw-bold" for="cod-check">
-                                        Cash On Delivery
-                                    </label>
+                            <div class="col-12">
+                                <div class="form-check p-3 rounded-4 border w-100 mb-2 bg-light">
+                                    <input class="form-check-input ms-1" type="radio" name="area" id="in"
+                                        value="60" onchange="updateTotal()" checked>
+                                    <label class="form-check-label ms-2" for="in">ঢাকার ভিতরে (৬০ টাকা)</label>
                                 </div>
+                                <div class="form-check p-3 rounded-4 border w-100 bg-light">
+                                    <input class="form-check-input ms-1" type="radio" name="area" id="out"
+                                        value="120" onchange="updateTotal()">
+                                    <label class="form-check-label ms-2" for="out">ঢাকার বাইরে (১২০ টাকা)</label>
+                                </div>
+                            </div>
 
-                                <button type="submit" id="place-order-btn" class="btn btn-primary btn-sm w-100 fw-bold"
-                                    disabled>
-                                    PLACE ORDER
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-add-cart py-3 mt-3 w-100">
+                                    অর্ডার নিশ্চিত করুন (ক্যাশ অন ডেলিভারি)
                                 </button>
-                            </form>
-
-
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-        {{-- //end continer --}}
-    </section>
+        {{-- // --}}
+
+
+
+
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    {{-- //Blog --}}
-
     <script>
+        let cart = [];
+        // We will populate this from the database
+        let teams = [];
+
+        // --- NEW: FETCH DYNAMIC TEAMS FROM LARAVEL API ---
+        async function loadDynamicTeams() {
+            try {
+                const response = await fetch('/v1/categories/with_product');
+                if (!response.ok) throw new Error("Network response was not ok");
+
+                // Assign the API data to our global teams variable
+                teams = await response.json();
+
+                // Re-render the flags once the data is ready
+                renderFlags();
+            } catch (error) {
+                console.error("Error fetching teams and products:", error);
+                document.getElementById('team-grid').innerHTML = `
+                <div class="col-12 text-center text-danger py-5">
+                    Failed to load products. Please refresh the page.
+                </div>`;
+            }
+        }
+
         async function renderHeroDeals() {
             try {
-                const response = await fetch('/api/blogs');
+                const response = await fetch('/v1/blogs'); // Replace with actual URL
                 const data = await response.json();
                 const blogs = Array.isArray(data) ? data : (data.blogs || []);
                 const container = document.getElementById('blog_div');
 
+                console.log(response);
+
                 if (blogs.length > 0) {
                     container.innerHTML = blogs.map((p, idx) => `
-                <div class="row align-items-center mt-${idx > 0 ? 5 : 0}">
-                    <div class="col-lg-6">
-                        <div class="animated-border-box">
-                            <div id="carousel-${p.id}" class="carousel slide" data-bs-ride="carousel">
-                                <div class="carousel-inner">
-                                    ${(Array.isArray(p.images) && p.images.length > 0 ? p.images : ['https://placehold.co/300x300?text=No+Image'])
-                                      .map((img, i) => `
-                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                    <img src="${img}" class="d-block w-100 carousel-img" 
-                                                         alt="${p.title}" 
-                                                         onerror="this.src='https://placehold.co/300x300?text=Error';">
-                                                </div>
-                                            `).join('')}
+                    <div class="row align-items-center mb-5">
+                        <div class="col-lg-6">
+                            <div class="animated-border-box">
+                                <div id="carousel-${p.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+                                    <div class="carousel-inner">
+                                        ${(p.images || [p.image]).map((img, i) => `
+                                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                <img src="${img}" class="carousel-img rounded-3">
+                                                                            </div>
+                                                                        `).join('')}
+                                    </div>
+                                    <button class="carousel-control-prev" data-bs-target="#carousel-${p.id}" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon bg-dark rounded-circle"></span>
+                                    </button>
+                                    <button class="carousel-control-next" data-bs-target="#carousel-${p.id}" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon bg-dark rounded-circle"></span>
+                                    </button>
                                 </div>
-                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon"></span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#carousel-${p.id}" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon"></span>
-                                </button>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-6 text-center px-lg-5 mt-4 mt-lg-0">
-                        <span class="badge bg-danger mb-2">HOT DEAL</span>
-                        <h1 class="display-3 fw-bold">${p.title}</h1>
-                        <div class="my-3">
-                            <span class="old-price">${p.regular_price} Tk</span> <br>
-                            <span class="new-price">${p.offer_price_text || 'Today:'} ${p.offer_price} Tk</span>
+                        <div class="col-lg-6 px-lg-5 text-center text-lg-start mt-4 mt-lg-0">
+                            <h1 class="display-4 fw-bold">${p.title}</h1>
+                            <div class="my-3">
+                                <span class="old-price">${p.regular_price} TK</span><br>
+                                <span class="new-price">${p.offer_price} TK</span>
+                            </div>
+                            <p class="text-muted lead">${p.short_description || ''}</p>
+                           <button class="btn btn-dark btn-lg px-5 rounded-pill" 
+                                    onclick="document.getElementById('team-grid').scrollIntoView({behavior: 'smooth'}); toggleDrawer('${p.slug}')">
+                                অর্ডার করতে চাই
+                            </button>
                         </div>
-                        <p class="lead text-muted mb-4">${p.short_description}</p>
-                        <div class="d-grid gap-2 d-md-block">
-                            <button class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow-sm"
-                                    onclick="scrollToTeam('${p.slug}')">অর্ডার করতে চাই</button>
-                        </div>
                     </div>
-                </div>
-            `).join('');
-
-                    // --- KEY FIX: Initialize carousels AFTER HTML is injected ---
-                    const carouselElList = container.querySelectorAll('.carousel');
-                    carouselElList.forEach(carouselEl => {
-                        new bootstrap.Carousel(carouselEl, {
-                            interval: 3000,
-                            ride: 'carousel'
-                        });
-                    });
-
-                } else {
-                    container.innerHTML = "<p>No deals available right now.</p>";
+                `).join('');
                 }
-            } catch (err) {
-                console.error("Error loading hero deals:", err);
+            } catch (e) {
+                console.log("Blog error:", e);
             }
         }
 
-        // Start the process
-        renderHeroDeals();
-    </script>
-
-    {{-- //Product & order --}}
-    <script>
-        let teams = []; // will be filled from API
-        let cart = JSON.parse(localStorage.getItem('kitShopCart')) || [];
-
-        window.onload = async () => {
-            await loadTeams(); // fetch teams dynamically
-            renderFlags(); // render flags after data is loaded
-            renderCart(); // render cart from localStorage
-        };
-
-        // Fetch teams from Laravel API
-        async function loadTeams() {
-            try {
-                const response = await fetch('/api/categories/with_product');
-                teams = await response.json(); // update global teams
-                // console.log("Loaded teams:", teams);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        }
-
-        // Render flag cards
         function renderFlags() {
             const grid = document.getElementById('team-grid');
-            if (!teams || teams.length === 0) {
-                grid.innerHTML = '<div class="text-muted">No teams available</div>';
+
+            if (teams.length === 0) {
+                grid.innerHTML = '<p class="text-center">Loading teams...</p>';
                 return;
             }
+
             grid.innerHTML = teams.map(t => `
-            <div class="col">
-                <div class="flag-card" id="flag-${t.id}" onclick="loadKits('${t.id}')">
-                    <img src="${t.flag}" class="flag-img">
-                    <div class="flag-name">${t.name}</div>
+            <div class="flag-card" id="flag-${t.id}" onclick="toggleDrawer('${t.id}')">
+                <img src="${t.flag}" class="flag-img" onerror="this.src='https://placehold.co/300x200?text=Flag+Missing'">
+                <div class="fw-bold mt-2 text-center">${t.name}</div>
+            </div>
+            <div class="product-drawer" id="drawer-${t.id}">
+                <div class="d-flex justify-content-between mb-4">
+                    <h4 class="fw-bold m-0">${t.name} KITS</h4>
+                    <button class="btn-close" onclick="closeAll()"></button>
                 </div>
-            </div>`).join('');
+                <div class="row row-cols-1 row-cols-lg-3 g-4">
+                    ${t.kits.map(k => `
+                                <div class="col">
+                                    <div class="product-card">
+                                    <div class="product-inner">
+                                        <a href="v1/product/${k.slug}" class="text-decoration-none">
+                                            <img src="${k.img}" class="w-100 rounded-3 mb-3 hover-zoom" 
+                                                onerror="this.src='https://placehold.co/500x500?text=Product+Image'">
+                                        </a>
+                                        
+                                        <a href="v1/product/${k.slug}" class="text-decoration-none">
+                                            <h6 class="fw-bold text-dark mb-1">${k.name}</h6>
+                                        </a>
+
+                                        <div class="text-danger fw-bold h5">${k.price} TK</div>
+                                        
+                                        <div class="size-selector">
+                                            ${['S','M','L','XL','XXL'].map(s => `
+                                        <input type="radio" name="size-${k.id}" value="${s}" id="s-${k.id}-${s}" class="size-radio d-none">
+                                        <label for="s-${k.id}-${s}" class="size-label">${s}</label>
+                                    `).join('')}
+                                        </div>
+                                        
+                                        <button class="btn-add-cart" onclick="addToCart(${k.id}, '${k.name.replace(/'/g, "\\'")}', ${k.price}, '${k.img}')">
+                                            Add To Cart
+                                        </button>
+                                    </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                </div>
+            </div>
+        `).join('');
         }
 
-        // Load kits for a team
-        function loadKits(id) {
-            const team = teams.find(t => t.id === id);
-            if (!team) {
-                console.error("No team found for id:", id);
-                return;
-            }
-
-            // Switch Visibility
-            document.getElementById('product-placeholder').style.display = 'none';
-            document.getElementById('product-content').style.display = 'block';
-
-            // Highlight Active Flag
-            document.querySelectorAll('.flag-card').forEach(f => f.classList.remove('active'));
-            document.getElementById(`flag-${id}`).classList.add('active');
-
-            // Populate Table
-            document.getElementById('team-title').innerText = team.name;
-            document.getElementById('product-tbody').innerHTML = team.kits.map(k => `
-            <tr>
-                <td><img src="${k.img}" class="product-thumb"></td>
-                <td class="fw-bold small">${k.name}</td>
-                <td>
-                    <select id="s-${k.id}" class="form-select form-select-sm py-0" style="width:55px; font-size:10px;">
-                        <option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option>
-                    </select>
-                </td>
-                <td class="fw-bold text-primary small">${k.price} TK</td>
-                <td class="text-end">
-                   <button class="btn btn-dark btn-sm rounded-circle py-0 px-2"
-                      onclick="addToCart(${k.id}, '${k.name}', ${k.price}, '${k.img}', 's-${k.id}')">+</button>
-                </td>
-            </tr>`).join('');
-
-            // Scroll to table
-            document.getElementById('shop-anchor').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-
-        // Add item to cart
-        function addToCart(productId, name, price, img, sizeId) {
-            const size = document.getElementById(sizeId).value;
-            const item = cart.find(i => i.product_id === productId && i.size === size);
-
-            if (item) {
-                item.qty += 1;
-            } else {
-                cart.push({
-                    product_id: productId, // store actual product table ID
-                    name,
-                    price,
-                    img,
-                    size,
-                    qty: 1
+        function toggleDrawer(id) {
+            closeAll();
+            const drawer = document.getElementById(`drawer-${id}`);
+            const flag = document.getElementById(`flag-${id}`);
+            if (drawer) {
+                drawer.style.display = 'block';
+                flag.classList.add('active');
+                drawer.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
                 });
             }
-            save();
         }
 
-        // Change quantity in cart
-        function changeQty(productId, d) {
-            const item = cart.find(i => i.product_id === productId);
-            if (item) {
-                item.qty += d;
-                if (item.qty <= 0) cart = cart.filter(i => i.product_id !== productId);
-            }
-            save();
+        function closeAll() {
+            document.querySelectorAll('.product-drawer').forEach(d => d.style.display = 'none');
+            document.querySelectorAll('.flag-card').forEach(f => f.classList.remove('active'));
         }
 
-        // Save cart to localStorage
-        function save() {
-            localStorage.setItem('kitShopCart', JSON.stringify(cart));
+        function addToCart(id, name, price, img) {
+            const sizeInput = document.querySelector(`input[name="size-${id}"]:checked`);
+            if (!sizeInput) return alert("দয়া করে প্রথমে একটি সাইজ (Size) সিলেক্ট করুন!");
+
+            const size = sizeInput.value;
+            const existing = cart.find(i => i.id === id && i.size === size);
+            existing ? existing.qty++ : cart.push({
+                id,
+                name,
+                price,
+                img,
+                size,
+                qty: 1
+            });
             renderCart();
         }
 
-        // Render cart items
         function renderCart() {
             const list = document.getElementById('cart-list');
+            if (!cart.length) {
+                list.innerHTML = '<p class="text-center text-muted">Cart is empty</p>';
+                return updateTotal();
+            }
+
+            list.innerHTML = cart.map((item, idx) => `
+            <div class="d-flex align-items-center justify-content-between p-3 mb-2 bg-light rounded-4 border">
+                <div class="d-flex align-items-center">
+                    <img src="${item.img}" width="50" class="rounded me-3">
+                    <div>
+                        <div class="fw-bold small">${item.name}</div>
+                        <div class="text-muted" style="font-size:12px">Size: ${item.size} | Qty: ${item.qty}</div>
+                    </div>
+                </div>
+                <div class="fw-bold text-dark">${item.price * item.qty} TK</div>
+                <button class="btn btn-sm btn-outline-danger" onclick="cart.splice(${idx},1); renderCart()">×</button>
+            </div>
+        `).join('');
+            updateTotal();
+        }
+
+        function updateTotal() {
+            const sub = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            const delEl = document.querySelector('input[name="area"]:checked');
+            const del = delEl ? parseInt(delEl.value) : 0;
+            document.getElementById('total-val').innerText = sub + del;
+        }
+
+        loadDynamicTeams();
+        renderHeroDeals();
+        renderFlags();
+    </script>
+
+
+    <script>
+        // Listen for the form submission
+        document.getElementById('order-form').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Stop page from refreshing
+
+            // 1. Validation: Check if cart is empty
             if (cart.length === 0) {
-                list.innerHTML = '<div class="text-center py-3 text-muted small">Cart empty</div>';
-                document.getElementById('total-val').innerText = "0";
+                alert("আপনার কার্ট খালি! দয়া করে পণ্য যোগ করুন। (Cart is empty!)");
                 return;
             }
-            list.innerHTML = cart.map(i => `
-            <div class="cart-item">
-                <div class="d-flex align-items-center">
-                    <img src="${i.img}" style="width:30px; height:30px; border-radius:4px; margin-right:8px; object-fit:cover;">
-                    <div style="line-height:1.1">
-                        <span class="fw-bold d-block" style="font-size:10px;">${i.name}</span>
-                        <small class="text-muted" style="font-size:9px;">Size: ${i.size}</small>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <div class="qty-box">
-                       <button class="qty-btn" onclick="changeQty(${i.product_id}, -1)">-</button>
-                        <span class="fw-bold" style="font-size:10px;">${i.qty}</span>
-                        <button class="qty-btn" onclick="changeQty(${i.product_id}, 1)">+</button>
-                    </div>
-                    <span class="fw-bold small" style="min-width:30px">${i.price * i.qty} TK</span>
-                </div>
-            </div>`).join('');
-            document.getElementById('total-val').innerText = cart.reduce((a, c) => a + (c.price * c.qty), 0);
-        }
-    </script>
 
-    <script>
-        function scrollToTeam(id) {
-            document.getElementById('shop-anchor').scrollIntoView({
-                behavior: 'smooth'
-            });
+            // 2. Confirmation Check
+            const isConfirmed = confirm("আপনি কি অর্ডারটি নিশ্চিত করতে চান? (Confirm your order?)");
+            if (!isConfirmed) return;
 
-            loadKits(id);
-        }
-    </script>
+            // 3. Gather Form Data
+            const customerName = this.querySelector('input[name="customer_name"]').value;
+            const mobile = this.querySelector('input[name="mobile"]').value;
+            const address = this.querySelector('textarea[name="address"]').value;
 
-    <script>
-        const orderForm = document.getElementById('order-form');
-        const placeOrderBtn = document.getElementById('place-order-btn');
-        const codCheck = document.getElementById('cod-check');
+            const deliveryEl = document.querySelector('input[name="area"]:checked');
+            const deliveryType = deliveryEl.id === 'in' ? 'Inside Dhaka' : 'Outside Dhaka';
+            const deliveryCharge = parseInt(deliveryEl.value);
 
-        codCheck.addEventListener('change', function() {
-            placeOrderBtn.disabled = !this.checked;
-        });
+            const subtotal = cart.reduce((a, b) => a + (b.price * b.qty), 0);
 
-        orderForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const customerName = document.getElementById('c-name').value;
-            const mobile = document.getElementById('c-mobile').value;
-            const address = document.getElementById('c-addr').value;
-
-            // cart items should include size, qty, price, etc.
-            const cart = JSON.parse(localStorage.getItem('kitShopCart')) || [];
-            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-
+            // 4. Prepare Payload
             const payload = {
                 customer_name: customerName,
                 mobile: mobile,
                 address: address,
+                delivery_type: deliveryType,
+                delivery_charge: deliveryCharge,
                 cart: cart.map(item => ({
-                    product_id: item.product_id, // actual product table ID
+                    product_id: item.id, // item.id from your cart array
                     name: item.name,
                     size: item.size,
                     qty: item.qty,
                     price: item.price
                 })),
-                total: totalAmount
+                subtotal: subtotal,
+                total: subtotal + deliveryCharge
             };
 
-            console.log("Payload being sent:", payload);
+            console.log("Submitting Order:", payload);
 
+            // 5. Submit via Fetch
             try {
-                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                const response = await fetch('/api/orders', {
+                const response = await fetch('/v1/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'X-CSRF-TOKEN': token
+                        'X-CSRF-TOKEN': csrfToken
                     },
                     body: JSON.stringify(payload)
                 });
 
-
-                // read response safely
-                const text = await response.text();
-                let data;
-                try {
-                    data = JSON.parse(text);
-                } catch (err) {
-                    console.error("Response was not JSON:", text);
-                    alert("Server returned invalid response.");
-                    return;
-                }
+                const data = await response.json();
 
                 if (response.ok && data.success) {
-                    alert("Order placed successfully!");
-                    localStorage.removeItem('kitShopCart');
+                    alert("ধন্যবাদ! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। (Order placed successfully!)");
+
+                    // Clear cart and UI
+                    cart = [];
+                    renderCart();
+                    this.reset(); // Clear the form
+
+                    // Optional: Redirect to a success page or reload
                     window.location.reload();
                 } else {
-                    alert("Failed: " + (data.error || 'Unknown error'));
+                    alert("অর্ডার ব্যর্থ হয়েছে: " + (data.message || data.error || 'Server error'));
                 }
             } catch (error) {
-                console.error("Error placing order:", error);
-                alert("Network error, please try again.");
+                console.error("Submission error:", error);
+                alert("নেটওয়ার্ক সমস্যা! আবার চেষ্টা করুন। (Network error, please try again.)");
             }
         });
     </script>
-
-
 </body>
 
 </html>

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class AdminSurjoController extends Controller
 {
@@ -135,7 +136,9 @@ class AdminSurjoController extends Controller
         $products = DB::table('products')
             ->leftJoin('categories', 'products.category_id', 'categories.id')
             ->select('products.*', 'categories.name as cat_name')
-            ->get();
+            ->latest('products.id') // Shows newest products at the top
+            ->paginate(15); // Splits products into pages of 15
+
         return view('backend.products.index', compact('products'));
     }
     public function adminAddProduct()
@@ -146,83 +149,126 @@ class AdminSurjoController extends Controller
 
     public function adminProductStore(Request $request)
     {
+        // 1. Validation (Added new fields)
         $request->validate([
-            'name'  => 'required|string|max:255',
-            'category_id'  => 'required',
-            'price' => 'required|numeric|min:0',
-            // 'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'name'        => 'required|string|max:255',
+            'slug'        => 'required|string|unique:products,slug',
+            'category_id' => 'required|exists:categories,id',
+            'price'       => 'required|numeric|min:0',
+            'old_price'   => 'nullable|numeric|min:0',
+            // 'image'       => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image'       => 'required|image',
+            // 'gallery.*'   => 'image|mimes:jpeg,png,jpg,webp|max:2048', // Validate each gallery image
+            'description' => 'nullable|string',
         ]);
 
+        // 2. Handle Main Image
+        $fullUrl = '';
         if ($request->hasFile('image')) {
-            // 1. Store the file physically
             $path = $request->file('image')->store('products', 'public');
-
-            // 2. Convert path to Full URL (e.g., http://yourdomain.com/storage/products/xyz.jpg)
             $fullUrl = asset('storage/' . $path);
-
-            // 3. Save the full URL to the database
-
-        } else {
-            $fullUrl = '';
         }
 
-        $path = $request->file('image')->store('products', 'public');
+        // 3. Handle Gallery Images (Multiple)
+        $galleryUrls = [];
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $file) {
+                $gPath = $file->store('products/gallery', 'public');
+                $galleryUrls[] = asset('storage/' . $gPath);
+            }
+        }
 
+        // 4. Insert into Database
         DB::table('products')->insert([
-            'name'       => $request->name,
-            'price'      => $request->price,
-            'image'      => $fullUrl,
-            'category_id'       => $request->category_id,
-            'user_id'       => Auth::user()->id,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'name'        => $request->name,
+            'slug'        => \Illuminate\Support\Str::slug($request->slug), // Ensure slug format
+            'price'       => $request->price,
+            'old_price'   => $request->old_price,
+            'image'       => $fullUrl,
+            'gallery'     => json_encode($galleryUrls), // Save array as JSON string
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'user_id'     => Auth::id(),
+            'status'      => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
         ]);
 
-        return redirect()->route('adminProduct')->with('success', 'Product added successfully!');
+        return redirect()->route('adminProduct')->with('success', 'Platinum Product added successfully!');
     }
 
     public function adminProductEdit($id)
     {
-        $categories = DB::table('categories')->get();
         $product = DB::table('products')->where('id', $id)->first();
+        $categories = DB::table('categories')->get();
+        $product->gallery = json_decode($product->gallery) ?? [];
         return view('backend.products.edit', compact('product', 'categories'));
     }
 
     public function adminProductUpdate(Request $request, $id)
     {
+        // 1. Find existing product
+        $product = DB::table('products')->where('id', $id)->first();
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found.');
+        }
+
+        // 2. Validation
         $request->validate([
-            'name'  => 'required|string|max:255',
-            'category_id'  => 'required',
-            // 'price' => 'required|numeric|min:0',
-            // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'name'        => 'required|string|max:255',
+            'slug'        => 'required|string|unique:products,slug,' . $id,
+            'category_id' => 'required',
+            'price'       => 'required|numeric',
+            // 'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            // 'gallery.*'   => 'image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $data = [
-            'name'       => $request->name,
-            'price'      => $request->price,
-            'category_id'       => $request->category_id,
-            'user_id'       => Auth::user()->id,
-            'updated_at' => now(),
+            'name'        => $request->name,
+            'slug'        => \Illuminate\Support\Str::slug($request->slug),
+            'price'       => $request->price,
+            'old_price'   => $request->old_price,
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'updated_at'  => now(),
         ];
 
-        $product = DB::table('products')->where('id', $id)->first();
+        // 3. Handle Main Image (Delete Old if New Uploaded)
         if ($request->hasFile('image')) {
-            // DELETE PREVIOUS IMAGE Logic
+            // Delete old physical file
             if ($product->image) {
-                // Since we stored the full URL, we need to extract the path to delete it
-                // This removes "http://domain.com/storage/" from the string
-                $oldPath = str_replace(asset('storage/'), '', $product->image);
-                Storage::disk('public')->delete($oldPath);
+                $oldPath = public_path('storage/' . str_replace(asset('storage/'), '', $product->image));
+                if (File::exists($oldPath)) {
+                    File::delete($oldPath);
+                }
             }
-
-            // Store new and generate Full URL
+            // Upload new file
             $path = $request->file('image')->store('products', 'public');
             $data['image'] = asset('storage/' . $path);
         }
 
+        // 4. Handle Gallery (Delete All Old if New Gallery Uploaded)
+        if ($request->hasFile('gallery')) {
+            $oldGallery = json_decode($product->gallery) ?? [];
+            foreach ($oldGallery as $oldImg) {
+                $oldGPath = public_path('storage/' . str_replace(asset('storage/'), '', $oldImg));
+                if (File::exists($oldGPath)) {
+                    File::delete($oldGPath);
+                }
+            }
+
+            $newGalleryUrls = [];
+            foreach ($request->file('gallery') as $file) {
+                $gPath = $file->store('products/gallery', 'public');
+                $newGalleryUrls[] = asset('storage/' . $gPath);
+            }
+            $data['gallery'] = json_encode($newGalleryUrls);
+        }
+
+        // 5. Update Database
         DB::table('products')->where('id', $id)->update($data);
 
-        return redirect()->route('adminProduct')->with('success', 'Product updated successfully!');
+        return redirect()->route('adminProduct')->with('success', 'Product updated and old files cleaned!');
     }
 
     public function adminProductEnableDisable(Request $request, $id)

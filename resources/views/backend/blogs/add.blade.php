@@ -89,7 +89,7 @@
 
                             <!-- Preview container -->
                             <div id="preview" class="mt-3 d-flex flex-wrap gap-2"></div>
-
+                            {{-- High-quality breathable fabric, perfect for sports and casual wear.Get the iconic look today! --}}
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Short Description</label>
                                 <textarea type="text" class="form-control @error('short_description') is-invalid @enderror" name="short_description"
