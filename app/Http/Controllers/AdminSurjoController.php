@@ -23,8 +23,19 @@ class AdminSurjoController extends Controller
 
     public function adminHome()
     {
-        $orders = DB::table('orders')->orderBy('created_at', 'desc')->get();
-        return view('backend.home', compact('orders'));
+        $orders = DB::table('orders')
+        ->where('status', "pending")
+        ->orderBy('created_at', 'desc')
+        ->get();
+        
+        $orders_deliverd = DB::table('orders')
+        ->where('status', "delivered")
+        ->count();
+        
+         $orders_total = DB::table('orders')
+        ->count();
+        
+        return view('backend.home', compact('orders','orders_deliverd','orders_total'));
     }
     public function adminSetting() {}
 
@@ -131,23 +142,23 @@ class AdminSurjoController extends Controller
 
 
     //Product
-    public function adminProduct()
-    {
-        $products = DB::table('products')
-            ->leftJoin('categories', 'products.category_id', 'categories.id')
-            ->select('products.*', 'categories.name as cat_name')
-            ->latest('products.id') // Shows newest products at the top
-            ->paginate(15); // Splits products into pages of 15
+public function adminProduct()
+{
+    $products = DB::table('products')
+        ->leftJoin('categories', 'products.category_id', 'categories.id')
+        ->select('products.*', 'categories.name as cat_name')
+        ->latest('products.id') // Shows newest products at the top
+        ->paginate(15); // Splits products into pages of 15
 
-        return view('backend.products.index', compact('products'));
-    }
+    return view('backend.products.index', compact('products'));
+}
     public function adminAddProduct()
     {
         $categories = DB::table('categories')->get();
         return view('backend.products.add', compact('categories'));
     }
 
-    public function adminProductStore(Request $request)
+     public function adminProductStore(Request $request)
     {
         // 1. Validation (Added new fields)
         $request->validate([

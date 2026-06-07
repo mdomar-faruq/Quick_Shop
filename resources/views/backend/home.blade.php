@@ -19,7 +19,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="text-secondary mb-1">Total Order</h6>
-                                <h4 class="mb-0 text-body">12,450</h4>
+                                <h4 class="mb-0 text-body">{{$orders_total}}</h4>
                             </div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="text-secondary mb-1">On Delivery</h6>
-                                <h4 class="mb-0 text-body">48</h4>
+                                <h4 class="mb-0 text-body">{{$orders_deliverd}}</h4>
                             </div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
 
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent border-bottom py-3">
-                <h5 class="mb-0 text-body">Recent Orders</h5>
+                <h5 class="mb-0 text-body">Pending Orders</h5>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">

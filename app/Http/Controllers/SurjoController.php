@@ -10,14 +10,15 @@ class SurjoController extends Controller
     public function surjo(Request $request)
     {
         $products = DB::table('products')
-            ->latest()
-            ->paginate(12);
+        ->where('products.status', 1)
+        ->latest()
+        ->paginate(12);
 
-        // If it's an AJAX request, return only the product cards (not the whole page)
-        if ($request->ajax()) {
-            return view('partials.product_cards', compact('products'))->render();
-        }
-        return view('frontend.surjo_final', compact('products'));
+    // If it's an AJAX request, return only the product cards (not the whole page)
+    if ($request->ajax()) {
+        return view('frontend.product_grid', compact('products'))->render();
+    }
+        return view('frontend.surjo_final',compact('products'));
         // return view('frontend.surjo');
     }
     public function getCategoriesWithProduct()

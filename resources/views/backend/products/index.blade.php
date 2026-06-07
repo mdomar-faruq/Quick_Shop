@@ -112,7 +112,7 @@
                                                 <li><a class="dropdown-item"
                                                         href="{{ route('adminProductEdit', $product->id) }}"><i
                                                             class="bi bi-pencil me-2"></i> Edit Details</a></li>
-                                                <li><a class="dropdown-item" href="/product/{{ $product->slug }}"
+                                                <li><a class="dropdown-item" href="/v1/product/{{ $product->slug }}"
                                                         target="_blank"><i class="bi bi-eye me-2"></i> View Live</a></li>
                                                 <li>
                                                     <hr class="dropdown-divider">

@@ -8,9 +8,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -25,37 +23,11 @@
         }
 
         /* Navbar & Footer (Same as original) */
-        .navbar {
-            backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.95) !important;
-        }
-
-        .navbar-brand {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            text-transform: uppercase;
-            font-size: 1.5rem !important;
-        }
-
-        footer {
-            background-color: #1e272e !important;
-        }
-
-        .social-btn {
-            width: 38px;
-            height: 38px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: 0.3s;
-        }
-
-        .social-btn:hover {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-        }
+        .navbar { backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.95) !important; }
+        .navbar-brand { font-family: 'Plus Jakarta Sans', sans-serif; text-transform: uppercase; font-size: 1.5rem !important; }
+        footer { background-color: #1e272e !important; }
+        .social-btn { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: 0.3s; }
+        .social-btn:hover { background: var(--accent-color); border-color: var(--accent-color); }
 
         /* Animated Card Design (Your specific request) */
         .animated-card-wrapper {
@@ -94,13 +66,8 @@
         }
 
         @keyframes borderRotate {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .sale-badge {
@@ -116,18 +83,8 @@
             z-index: 2;
         }
 
-        .card-old-price {
-            text-decoration: line-through;
-            color: #a1a1a1;
-            font-size: 0.85rem;
-            margin-right: 5px;
-        }
-
-        .card-new-price {
-            color: #ff4757;
-            font-weight: 800;
-            font-size: 1.1rem;
-        }
+        .card-old-price { text-decoration: line-through; color: #a1a1a1; font-size: 0.85rem; margin-right: 5px; }
+        .card-new-price { color: #ff4757; font-weight: 800; font-size: 1.1rem; }
 
         .btn-more-details {
             background: rgba(13, 110, 253, 0.05);
@@ -138,15 +95,9 @@
             transition: 0.3s;
         }
 
-        .animated-card-wrapper:hover {
-            transform: translateY(-5px);
-        }
-
-        .animated-card-wrapper:hover .btn-more-details {
-            background: #0d6efd;
-            color: white;
-        }
-
+        .animated-card-wrapper:hover { transform: translateY(-5px); }
+        .animated-card-wrapper:hover .btn-more-details { background: #0d6efd; color: white; }
+        
         .page-header {
             background: white;
             border-bottom: 1px solid #eee;
@@ -165,8 +116,7 @@
                 <span style="color: var(--accent-color); margin-left: 2px;">SPORTS</span>
             </a>
 
-            <a href="tel:+8801XXXXXXXXX"
-                class="text-decoration-none d-flex align-items-center bg-light px-3 py-2 rounded-pill">
+            <a href="tel:+8801XXXXXXXXX" class="text-decoration-none d-flex align-items-center bg-light px-3 py-2 rounded-pill">
                 <i class="bi bi-telephone-fill text-danger me-2"></i>
                 <span class="fw-bold d-none d-md-inline small text-dark">হেল্পলাইন: +৮৮০১৭...</span>
             </a>
@@ -196,8 +146,7 @@
                                 @endif
 
                                 <div class="overflow-hidden rounded-3 mb-2">
-                                    <img src="{{ $item->image }}" class="img-fluid w-100"
-                                        style="aspect-ratio: 1/1; object-fit: cover;" alt="{{ $item->name }}">
+                                    <img src="{{ $item->image }}" class="img-fluid w-100" style="aspect-ratio: 1/1; object-fit: cover;" alt="{{ $item->name }}">
                                 </div>
 
                                 <h6 class="text-dark fw-bold mb-1 text-truncate" style="font-size: 0.95rem;">
@@ -221,18 +170,18 @@
             @endforeach
         </div>
 
-        <div class="row g-3 g-md-4 mt-2" id="product-container">
-            @include('frontend.product_grid', ['products' => $products])
-        </div>
-
-        <div id="load-more-trigger" style="height: 20px;"></div>
-
-        <div id="loading-spinner" class="text-center my-4" style="display: none;">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p>লোড হচ্ছে...</p>
-        </div>
-
-
+    <div class="row g-3 g-md-4 mt-2" id="product-container">
+        @include('frontend.product_grid', ['products' => $products])
+    </div>
+    
+    <div id="load-more-trigger" style="height: 20px;"></div>
+    
+    <div id="loading-spinner" class="text-center my-4" style="display: none;">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p>লোড হচ্ছে...</p>
+    </div>
+            
+        
     </div>
 
     <footer class="text-white pt-5 pb-4">
@@ -240,8 +189,7 @@
             <div class="row gy-4 text-center text-md-start">
                 <div class="col-md-4">
                     <h4 class="fw-bold mb-3">SURJO <span style="color: var(--accent-color);">SPORTS</span></h4>
-                    <p class="text-white-50 small">প্রিমিয়াম কোয়ালিটি জার্সি এবং স্পোর্টস এক্সেসরিজের নির্ভরযোগ্য
-                        অনলাইন শপ। সারা বাংলাদেশে ক্যাশ অন ডেলিভারি।</p>
+                    <p class="text-white-50 small">প্রিমিয়াম কোয়ালিটি জার্সি এবং স্পোর্টস এক্সেসরিজের নির্ভরযোগ্য অনলাইন শপ। সারা বাংলাদেশে ক্যাশ অন ডেলিভারি।</p>
                 </div>
 
                 <div class="col-md-4 text-center">
@@ -259,7 +207,7 @@
                         <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
                         <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
                         <a href="#" class="social-btn"><i class="bi bi-tiktok"></i></a>
-                        <a href="https://wa.me/+880168XXXXXXX" class="social-btn" target="_blank">
+                         <a href="https://wa.me/+880168XXXXXXX" class="social-btn" target="_blank">
                             <i class="bi bi-whatsapp"></i>
                         </a>
                     </div>
@@ -273,49 +221,47 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    
     <script>
         let page = 1;
-        let loading = false;
-        let hasMore = true;
+let loading = false;
+let hasMore = true;
 
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting && !loading && hasMore) {
-                loadMoreProducts();
-            }
-        }, {
-            threshold: 1.0
-        });
+const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !loading && hasMore) {
+        loadMoreProducts();
+    }
+}, { threshold: 1.0 });
 
-        observer.observe(document.querySelector('#load-more-trigger'));
+observer.observe(document.querySelector('#load-more-trigger'));
 
-        function loadMoreProducts() {
-            page++;
-            loading = true;
-            document.getElementById('loading-spinner').style.display = 'block';
+function loadMoreProducts() {
+    page++;
+    loading = true;
+    document.getElementById('loading-spinner').style.display = 'block';
 
-            // Use your actual route URL here
-            fetch(`/?page=${page}`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.text())
-                .then(data => {
-                    if (data.trim() === "") {
-                        hasMore = false;
-                        document.getElementById('loading-spinner').innerHTML = "<p>সব প্রোডাক্ট দেখা শেষ!</p>";
-                    } else {
-                        document.getElementById('product-container').insertAdjacentHTML('beforeend', data);
-                        loading = false;
-                        document.getElementById('loading-spinner').style.display = 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    loading = false;
-                });
+    // Use your actual route URL here
+    fetch(`/?page=${page}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
         }
+    })
+    .then(response => response.text())
+    .then(data => {
+        if (data.trim() === "") {
+            hasMore = false;
+            document.getElementById('loading-spinner').innerHTML = "<p>সব প্রোডাক্ট দেখা শেষ!</p>";
+        } else {
+            document.getElementById('product-container').insertAdjacentHTML('beforeend', data);
+            loading = false;
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        loading = false;
+    });
+}
     </script>
 </body>
 
