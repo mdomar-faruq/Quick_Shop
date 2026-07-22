@@ -198,11 +198,12 @@
         .animated-card-wrapper::before {
             content: '';
             position: absolute;
-            width: 150%;
-            height: 150%;
-            background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fbc2eb, #8b00ff);
-            top: -25%;
-            left: -25%;
+            width: 180%;
+            height: 180%;
+            top: -40%;
+            left: -40%;
+            background: conic-gradient(from 0deg, #ff9a9e, #fad0c4, #fbc2eb, #8b00ff, #ff9a9e);
+            border-radius: 50%;
             animation: borderRotate 4s linear infinite;
             z-index: -2;
         }
@@ -430,7 +431,7 @@
                                 <i class="bi bi-bag-check-fill me-2"></i> অর্ডার কনফার্ম করুন
                             </button>
 
-                            {{--<a href="https://wa.me/8801XXXXXXXXX?text={{ urlencode('হ্যালো, আমি আপনার শপ থেকে ' . $product->name . ' এই প্রোডাক্টটি অর্ডার করতে চাই। মূল্য: ' . $product->price . ' টাকা।') }}"
+                            {{-- <a href="https://wa.me/8801XXXXXXXXX?text={{ urlencode('হ্যালো, আমি আপনার শপ থেকে ' . $product->name . ' এই প্রোডাক্টটি অর্ডার করতে চাই। মূল্য: ' . $product->price . ' টাকা।') }}"
                                 target="_blank"
                                 class="btn btn-whatsapp w-100 py-3 rounded-4 d-flex align-items-center justify-content-center mt-3">
                                 <i class="bi bi-whatsapp me-2"></i> হোয়াটসঅ্যাপে অর্ডার করুন
@@ -526,7 +527,7 @@
                         <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
                         <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
                         <a href="#" class="social-btn"><i class="bi bi-tiktok"></i></a>
-                         <a href="https://wa.me/+8801681935050" class="social-btn" target="_blank">
+                        <a href="https://wa.me/+8801681935050" class="social-btn" target="_blank">
                             <i class="bi bi-whatsapp"></i>
                         </a>
                     </div>

@@ -5,6 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surjo</title>
+
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            } catch (error) {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            }
+        })();
+    </script>
+
     <link href="{{ asset('css/bootstrap_5_3.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/bootstrap_icon_5_3.css') }}" rel="stylesheet">
@@ -149,24 +161,29 @@
         const themeIcon = document.getElementById('themeIcon');
         const htmlElement = document.documentElement;
 
-        // Check for saved theme in localStorage
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        htmlElement.setAttribute('data-bs-theme', savedTheme);
-        updateIcon(savedTheme);
+        const currentTheme = htmlElement.getAttribute('data-bs-theme') || 'light';
+        updateIcon(currentTheme);
 
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = htmlElement.getAttribute('data-bs-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const nextTheme = htmlElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
 
-            htmlElement.setAttribute('data-bs-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateIcon(newTheme);
-        });
+                htmlElement.setAttribute('data-bs-theme', nextTheme);
+                localStorage.setItem('theme', nextTheme);
+                updateIcon(nextTheme);
+            });
+        }
 
         function updateIcon(theme) {
+            if (!themeIcon) {
+                return;
+            }
+
             if (theme === 'dark') {
-                themeIcon.classList.replace('bi-moon-stars', 'bi-sun');
-            } else {
+                if (themeIcon.classList.contains('bi-moon-stars')) {
+                    themeIcon.classList.replace('bi-moon-stars', 'bi-sun');
+                }
+            } else if (themeIcon.classList.contains('bi-sun')) {
                 themeIcon.classList.replace('bi-sun', 'bi-moon-stars');
             }
         }

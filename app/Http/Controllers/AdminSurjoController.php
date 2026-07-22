@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
 class AdminSurjoController extends Controller
 {
@@ -21,21 +20,47 @@ class AdminSurjoController extends Controller
         $this->middleware('auth');
     }
 
+    private function uploadDisk(): string
+    {
+        $disk = env('FILESYSTEM_DISK', 'public');
+
+        if (in_array($disk, ['local', 'private'], true)) {
+            return 'public';
+        }
+
+        return $disk;
+    }
+
+    private function buildStorageUrl(string $disk, string $path): string
+    {
+        $diskConfig = config("filesystems.disks.{$disk}");
+
+        if (!empty($diskConfig['url'])) {
+            return rtrim($diskConfig['url'], '/') . '/' . ltrim($path, '/');
+        }
+
+        if ($disk === 'public') {
+            return url('storage/' . ltrim($path, '/'));
+        }
+
+        return url(ltrim($path, '/'));
+    }
+
     public function adminHome()
     {
         $orders = DB::table('orders')
-        ->where('status', "pending")
-        ->orderBy('created_at', 'desc')
-        ->get();
-        
+            ->where('status', "pending")
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         $orders_deliverd = DB::table('orders')
-        ->where('status', "delivered")
-        ->count();
-        
-         $orders_total = DB::table('orders')
-        ->count();
-        
-        return view('backend.home', compact('orders','orders_deliverd','orders_total'));
+            ->where('status', "delivered")
+            ->count();
+
+        $orders_total = DB::table('orders')
+            ->count();
+
+        return view('backend.home', compact('orders', 'orders_deliverd', 'orders_total'));
     }
     public function adminSetting() {}
 
@@ -55,30 +80,23 @@ class AdminSurjoController extends Controller
     public function adminCategoryStore(Request $request)
     {
         $request->validate([
-            'name'  => 'required|string|max:255',
-            // 'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
+        $disk = $this->uploadDisk();
+        $fullUrl = '';
+
         if ($request->hasFile('image')) {
-            // 1. Store the file physically
-            $path = $request->file('image')->store('categories', 'public');
-
-            // 2. Convert path to Full URL (e.g., http://yourdomain.com/storage/categories/xyz.jpg)
-            $fullUrl = asset('storage/' . $path);
-
-            // 3. Save the full URL to the database
-
-        } else {
-            $fullUrl = '';
+            $path = $request->file('image')->store('categories', $disk);
+            $fullUrl = $this->buildStorageUrl($disk, $path);
         }
 
-        $path = $request->file('image')->store('products', 'public');
-
         DB::table('categories')->insert([
-            'name'       => $request->name,
+            'name' => $request->name,
             'slug' => Str::slug($request->name),
-            'image'      => $fullUrl,
-            'user_id'       => Auth::user()->id,
+            'image' => $fullUrl,
+            'user_id' => Auth::user()->id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -96,7 +114,7 @@ class AdminSurjoController extends Controller
     {
         $request->validate([
             'name'  => 'required|string|max:255',
-            // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = [
@@ -106,19 +124,16 @@ class AdminSurjoController extends Controller
             'updated_at' => now(),
         ];
 
+        $disk = $this->uploadDisk();
         $categories = DB::table('categories')->where('id', $id)->first();
         if ($request->hasFile('image')) {
-            // DELETE PREVIOUS IMAGE Logic
             if ($categories->image) {
-                // Since we stored the full URL, we need to extract the path to delete it
-                // This removes "http://domain.com/storage/" from the string
-                $oldPath = str_replace(asset('storage/'), '', $categories->image);
-                Storage::disk('public')->delete($oldPath);
+                $relativePath = str_replace(rtrim(config("filesystems.disks.{$disk}.url", url('/storage')), '/') . '/', '', $categories->image);
+                Storage::disk($disk)->delete($relativePath);
             }
 
-            // Store new and generate Full URL
-            $path = $request->file('image')->store('categories', 'public');
-            $data['image'] = asset('storage/' . $path);
+            $path = $request->file('image')->store('categories', $disk);
+            $data['image'] = $this->buildStorageUrl($disk, $path);
         }
 
         DB::table('categories')->where('id', $id)->update($data);
@@ -142,23 +157,23 @@ class AdminSurjoController extends Controller
 
 
     //Product
-public function adminProduct()
-{
-    $products = DB::table('products')
-        ->leftJoin('categories', 'products.category_id', 'categories.id')
-        ->select('products.*', 'categories.name as cat_name')
-        ->latest('products.id') // Shows newest products at the top
-        ->paginate(15); // Splits products into pages of 15
+    public function adminProduct()
+    {
+        $products = DB::table('products')
+            ->leftJoin('categories', 'products.category_id', 'categories.id')
+            ->select('products.*', 'categories.name as cat_name')
+            ->latest('products.id') // Shows newest products at the top
+            ->paginate(15); // Splits products into pages of 15
 
-    return view('backend.products.index', compact('products'));
-}
+        return view('backend.products.index', compact('products'));
+    }
     public function adminAddProduct()
     {
         $categories = DB::table('categories')->get();
         return view('backend.products.add', compact('categories'));
     }
 
-     public function adminProductStore(Request $request)
+    public function adminProductStore(Request $request)
     {
         // 1. Validation (Added new fields)
         $request->validate([
@@ -167,25 +182,25 @@ public function adminProduct()
             'category_id' => 'required|exists:categories,id',
             'price'       => 'required|numeric|min:0',
             'old_price'   => 'nullable|numeric|min:0',
-            // 'image'       => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
             'image'       => 'required|image',
-            // 'gallery.*'   => 'image|mimes:jpeg,png,jpg,webp|max:2048', // Validate each gallery image
             'description' => 'nullable|string',
         ]);
+
+        $disk = $this->uploadDisk();
 
         // 2. Handle Main Image
         $fullUrl = '';
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $fullUrl = asset('storage/' . $path);
+            $path = $request->file('image')->store('products', $disk);
+            $fullUrl = $this->buildStorageUrl($disk, $path);
         }
 
         // 3. Handle Gallery Images (Multiple)
         $galleryUrls = [];
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $file) {
-                $gPath = $file->store('products/gallery', 'public');
-                $galleryUrls[] = asset('storage/' . $gPath);
+                $gPath = $file->store('products/gallery', $disk);
+                $galleryUrls[] = $this->buildStorageUrl($disk, $gPath);
             }
         }
 
@@ -244,34 +259,31 @@ public function adminProduct()
             'updated_at'  => now(),
         ];
 
+        $disk = $this->uploadDisk();
+
         // 3. Handle Main Image (Delete Old if New Uploaded)
         if ($request->hasFile('image')) {
-            // Delete old physical file
             if ($product->image) {
-                $oldPath = public_path('storage/' . str_replace(asset('storage/'), '', $product->image));
-                if (File::exists($oldPath)) {
-                    File::delete($oldPath);
-                }
+                $relativePath = str_replace(rtrim(config("filesystems.disks.{$disk}.url", url('/storage')), '/') . '/', '', $product->image);
+                Storage::disk($disk)->delete($relativePath);
             }
-            // Upload new file
-            $path = $request->file('image')->store('products', 'public');
-            $data['image'] = asset('storage/' . $path);
+
+            $path = $request->file('image')->store('products', $disk);
+            $data['image'] = $this->buildStorageUrl($disk, $path);
         }
 
         // 4. Handle Gallery (Delete All Old if New Gallery Uploaded)
         if ($request->hasFile('gallery')) {
             $oldGallery = json_decode($product->gallery) ?? [];
             foreach ($oldGallery as $oldImg) {
-                $oldGPath = public_path('storage/' . str_replace(asset('storage/'), '', $oldImg));
-                if (File::exists($oldGPath)) {
-                    File::delete($oldGPath);
-                }
+                $relativePath = str_replace(rtrim(config("filesystems.disks.{$disk}.url", url('/storage')), '/') . '/', '', $oldImg);
+                Storage::disk($disk)->delete($relativePath);
             }
 
             $newGalleryUrls = [];
             foreach ($request->file('gallery') as $file) {
-                $gPath = $file->store('products/gallery', 'public');
-                $newGalleryUrls[] = asset('storage/' . $gPath);
+                $gPath = $file->store('products/gallery', $disk);
+                $newGalleryUrls[] = $this->buildStorageUrl($disk, $gPath);
             }
             $data['gallery'] = json_encode($newGalleryUrls);
         }
@@ -320,16 +332,17 @@ public function adminProduct()
             'offer_price_text' => 'required|string|max:255',
             'offer_price' => 'required|numeric|min:0',
             'regular_price' => 'required|numeric|min:0',
-            // 'images.*' => 'image',
             'short_description' => 'nullable|string',
         ]);
+
+        $disk = $this->uploadDisk();
 
         // ✅ Handle multiple images
         $paths = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $path = $file->store('blogs', 'public'); // stored in storage/app/public/blogs
-                $paths[] = asset('storage/' . $path);
+                $path = $file->store('blogs', $disk);
+                $paths[] = $this->buildStorageUrl($disk, $path);
             }
         }
 
@@ -370,14 +383,15 @@ public function adminProduct()
         ]);
 
         $blog = DB::table('blogs')->where('id', $id)->first();
+        $disk = $this->uploadDisk();
 
         $paths = json_decode($blog->images, true) ?? [];
 
         if ($request->hasFile('images')) {
-            $paths = []; // replace old images, or merge if you prefer
+            $paths = [];
             foreach ($request->file('images') as $file) {
-                $storedPath = $file->store('blogs', 'public');
-                $paths[] = url('storage/' . $storedPath); // full URL
+                $storedPath = $file->store('blogs', $disk);
+                $paths[] = $this->buildStorageUrl($disk, $storedPath);
             }
         }
 

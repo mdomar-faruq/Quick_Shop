@@ -4,7 +4,7 @@
     <div class="container-fluid py-5 px-4">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
             <div>
-                <h2 class="fw-black mb-1 text-dark">Product Inventory</h2>
+                <h2 class="fw-black mb-1 text-body-emphasis">Product Inventory</h2>
                 <p class="text-muted mb-0">Manage your premium kits and stock levels</p>
             </div>
             <a href="{{ route('adminAddProduct') }}" class="btn btn-dark btn-lg rounded-pill px-4 shadow-sm">
@@ -14,7 +14,7 @@
 
         <div class="row g-4 mb-5">
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary">
                     <small class="text-uppercase fw-bold text-muted">Total Products</small>
                     <h3 class="fw-bold mb-0">{{ $products->count() }}</h3>
                 </div>
@@ -25,7 +25,7 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
+                        <thead class="bg-body-tertiary">
                             <tr>
                                 <th class="ps-4 py-3 border-0 text-uppercase small fw-bold text-muted">Product Info</th>
                                 <th class="py-3 border-0 text-uppercase small fw-bold text-muted">Category</th>
@@ -63,13 +63,15 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-medium">
+                                        <span
+                                            class="badge bg-body-tertiary text-body-emphasis border px-3 py-2 rounded-pill fw-medium">
                                             <i class="bi bi-tag-fill me-1 text-primary"></i> {{ $product->cat_name }}
                                         </span>
                                     </td>
 
                                     <td>
-                                        <div class="fw-bold text-dark">Tk {{ number_format($product->price, 2) }}</div>
+                                        <div class="fw-bold text-body-emphasis">Tk {{ number_format($product->price, 2) }}
+                                        </div>
                                         @if ($product->old_price)
                                             <small class="text-muted text-decoration-line-through">Tk
                                                 {{ number_format($product->old_price, 2) }}</small>
@@ -148,7 +150,7 @@
         }
 
         .bg-soft-secondary {
-            background-color: #f0f2f5;
+            background-color: var(--bs-tertiary-bg);
         }
 
         .transition {
@@ -156,7 +158,7 @@
         }
 
         .table tbody tr:hover {
-            background-color: #fafbfc;
+            background-color: rgba(var(--bs-primary-rgb), 0.05);
             transform: scale(1.002);
         }
 
@@ -174,8 +176,8 @@
 
         /* Action Dropdown Hover */
         .dropdown-item:hover {
-            background-color: #f8f9fa;
-            color: #000;
+            background-color: var(--bs-tertiary-bg);
+            color: var(--bs-emphasis-color);
         }
 
         /* page link */
@@ -194,7 +196,7 @@
         }
 
         .bg-soft-secondary {
-            background-color: #f8f9fa;
+            background-color: var(--bs-tertiary-bg);
         }
     </style>
 
