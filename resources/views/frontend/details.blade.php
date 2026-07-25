@@ -5,6 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $product->name }} | SURJO SPORTS</title>
+    <!-- Meta Pixel Code -->
+    @php
+        $facebookPixelId = env('FACEBOOK_PIXEL_ID', '');
+    @endphp
+    @if ($facebookPixelId)
+        <script>
+            ! function(f, b, e, v, n, t, s) {
+                if (f.fbq) return;
+                n = f.fbq = function() {
+                    n.callMethod ?
+                        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                };
+                if (!f._fbq) f._fbq = n;
+                n.push = n;
+                n.loaded = !0;
+                n.version = '2.0';
+                n.queue = [];
+                t = b.createElement(e);
+                t.async = !0;
+                t.src = v;
+                s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s)
+            }(window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '{{ $facebookPixelId }}');
+            fbq('track', 'PageView');
+        </script>
+        <noscript><img height="1" width="1" style="display:none"
+                src="https://www.facebook.com/tr?id={{ $facebookPixelId }}&ev=PageView&noscript=1" /></noscript>
+    @endif
+    <!-- End Meta Pixel Code -->
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -135,8 +166,6 @@
             color: white;
         }
 
-
-
         /* Mobile Optimization */
         @media (max-width: 768px) {
             .mobile-sticky-btn {
@@ -179,9 +208,7 @@
             background: var(--accent-color);
             border-color: var(--accent-color);
         }
-    </style>
 
-    <style>
         /* Animated Border Card */
         .animated-card-wrapper {
             position: relative;
@@ -282,9 +309,7 @@
             border-color: #0d6efd;
             box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
         }
-    </style>
 
-    <style>
         .btn-whatsapp {
             background-color: #25D366;
             color: white;
@@ -292,6 +317,7 @@
             font-size: 1.1rem;
             border: none;
             transition: 0.3s;
+            animation: shadow-pulse 2s infinite;
         }
 
         .btn-whatsapp:hover {
@@ -299,11 +325,6 @@
             color: white;
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
-        }
-
-        /* Optional: Pulse effect for WhatsApp to grab attention */
-        .btn-whatsapp {
-            animation: shadow-pulse 2s infinite;
         }
 
         @keyframes shadow-pulse {
@@ -324,21 +345,7 @@
 
 <body>
 
-    <nav class="navbar navbar-light bg-white py-3 shadow-sm sticky-top">
-        <div class="container d-flex justify-content-between align-items-center">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
-                <span style="color: #000;">SURJO</span>
-                <span style="color: var(--accent-color); margin-left: 2px;">SPORTS</span>
-            </a>
-
-            <a href="tel:+8801XXXXXXXXX"
-                class="text-decoration-none d-flex align-items-center bg-light px-3 py-2 rounded-pill">
-                <i class="bi bi-telephone-fill text-danger me-2"></i>
-                <span class="fw-bold d-none d-md-inline small text-dark">হেল্পলাইন: +৮৮০১৭...</span>
-            </a>
-        </div>
-    </nav>
-
+    @include('frontend.partials.navbar')
 
     <div class="container py-4">
         <div class="row g-4 gx-lg-5">
@@ -427,15 +434,14 @@
                                     TK</span>
                             </div>
 
+                            <button type="button" id="add-to-cart-btn"
+                                class="btn btn-outline-primary w-100 py-3 rounded-4 mb-3">
+                                <i class="bi bi-cart-plus me-2"></i> কার্টে যোগ করুন
+                            </button>
+
                             <button type="submit" class="btn btn-order-now w-100 py-3 rounded-4">
                                 <i class="bi bi-bag-check-fill me-2"></i> অর্ডার কনফার্ম করুন
                             </button>
-
-                            {{-- <a href="https://wa.me/8801XXXXXXXXX?text={{ urlencode('হ্যালো, আমি আপনার শপ থেকে ' . $product->name . ' এই প্রোডাক্টটি অর্ডার করতে চাই। মূল্য: ' . $product->price . ' টাকা।') }}"
-                                target="_blank"
-                                class="btn btn-whatsapp w-100 py-3 rounded-4 d-flex align-items-center justify-content-center mt-3">
-                                <i class="bi bi-whatsapp me-2"></i> হোয়াটসঅ্যাপে অর্ডার করুন
-                            </a> --}}
                         </form>
                     </div>
 
@@ -561,21 +567,75 @@
 
     <script>
         function updateTotal() {
-            // Get the base product price from the hidden input
             let productPrice = parseInt(document.getElementById('product_price').value);
-
-            // Get the selected delivery charge
             let deliveryCharge = parseInt(document.querySelector('input[name="delivery_charge"]:checked').value);
-
-            // Calculate total
             let total = productPrice + deliveryCharge;
-
-            // Update the display text
             document.getElementById('total_display').innerText = total.toLocaleString();
         }
 
-        // Run once on load to ensure price is correct if 'out' was somehow pre-selected
-        window.onload = updateTotal;
+        function updateCartBadge() {
+            let cart = JSON.parse(localStorage.getItem('surjo_cart')) || [];
+            let count = cart.reduce((sum, item) => sum + item.qty, 0);
+            let badge = document.getElementById('cart-count-badge');
+            if (badge) {
+                badge.innerText = count;
+                badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+        }
+
+        document.getElementById('add-to-cart-btn')?.addEventListener('click', function() {
+            let selectedSize = document.querySelector('input[name="size"]:checked');
+            if (!selectedSize) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'সাইজ নির্বাচন করুন',
+                    text: 'অর্ডার/কার্টে যোগ করতে আপনার সাইজ নির্বাচন করুন।',
+                    confirmButtonColor: '#0d6efd'
+                });
+                return;
+            }
+
+            let cart = JSON.parse(localStorage.getItem('surjo_cart')) || [];
+            let productId = {{ $product->id }};
+            let item = cart.find((entry) => entry.product_id === productId && entry.size === selectedSize.value);
+
+            if (item) {
+                item.qty += 1;
+            } else {
+                cart.push({
+                    product_id: productId,
+                    name: '{{ $product->name }}',
+                    price: {{ $product->price }},
+                    image: '{{ $product->image }}',
+                    size: selectedSize.value,
+                    qty: 1
+                });
+            }
+
+            localStorage.setItem('surjo_cart', JSON.stringify(cart));
+            updateCartBadge();
+
+            // SweetAlert Popup instead of direct redirect
+            Swal.fire({
+                icon: 'success',
+                title: 'কার্টে যোগ করা হয়েছে!',
+                text: 'পণ্যটি সফলভাবে কার্টে যোগ করা হয়েছে। আপনি কি কার্ট দেখতে চান নাকি কেনাকাটা চালিয়ে যাবেন?',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'কার্টে যান',
+                cancelButtonText: 'কেনাকাটা চালিয়ে যান'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '{{ route('cart') }}';
+                }
+            });
+        });
+
+        window.onload = function() {
+            updateTotal();
+            updateCartBadge();
+        };
     </script>
 </body>
 

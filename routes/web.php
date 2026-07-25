@@ -11,6 +11,7 @@ Auth::routes();
 Route::get('/', [SurjoController::class, 'surjo'])->name('surjo');
 Route::get('/v1/categories/with_product', [SurjoController::class, 'getCategoriesWithProduct']);
 Route::get('/v1/product/{slug}', [SurjoController::class, 'getProductDetails'])->name('getProductDetails');
+Route::get('/cart', [SurjoController::class, 'cartPage'])->name('cart');
 Route::get('/v1/blogs', [SurjoController::class, 'apiBlogs']);
 Route::get('/v1/products', [SurjoController::class, 'apiProduct']);
 Route::post('/v1/orders', [SurjoController::class, 'surjoOrderStore']);

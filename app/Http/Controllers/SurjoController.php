@@ -88,6 +88,12 @@ class SurjoController extends Controller
 
         return view('frontend.details', compact('product', 'similar'));
     }
+
+    public function cartPage()
+    {
+        return view('frontend.cart');
+    }
+
     public function apiBlogs()
     {
         $blogs = DB::table('blogs')
@@ -113,21 +119,33 @@ class SurjoController extends Controller
     public function surjoOrderStore(Request $request)
     {
         try {
-            // Validate input
-            $request->validate([
-                // 'customer_name' => 'required|string|max:255',
-                'mobile'        => 'required|max:20',
-                // 'address'       => 'required|string|max:500',
-                'cart'          => 'required|array|min:1',
-                'total'         => 'required|numeric|min:0'
+            $cart = $request->input('cart');
+            if (is_string($cart)) {
+                $cart = json_decode($cart, true);
+            }
+
+            if (!is_array($cart)) {
+                $cart = [$cart];
+            }
+
+            $request->merge([
+                'customer_name' => $request->input('customer_name', $request->input('name')),
+                'mobile' => $request->input('mobile', $request->input('phone')),
+                'address' => $request->input('address', $request->input('address_field')),
+                'cart' => $cart,
             ]);
 
-            // Insert into orders table
+            $request->validate([
+                'mobile' => 'required|max:20',
+                'cart' => 'required|array|min:1',
+                'total' => 'required|numeric|min:0'
+            ]);
+
             DB::table('orders')->insert([
                 'customer_name' => $request->customer_name,
                 'mobile'        => $request->mobile,
                 'address'       => $request->address,
-                'cart_details'  => json_encode($request->cart), // store cart as JSON
+                'cart_details'  => json_encode($request->cart),
                 'delivery_charge' => $request->delivery_charge,
                 'subtotal' => $request->subtotal,
                 'total_amount'  => $request->total,
